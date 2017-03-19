@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<diagram>
+    <box name="Association" row="45"  col="240" width="100">
+        <relation type="association" with="Inheritance" />
+    </box>
+    <box name="Inheritance" row="195" col="60"  width="100">
+        <relation type="inheritance" with="Realization" />
+    </box>
+    <box name="Realization" row="425" col="105" width="100">
+        <relation type="realization" with="Aggregation" />
+    </box>
+    <box name="Aggregation" row="500" col="325" width="100">
+        <relation type="aggregation" with="Composition" />
+    </box>
+    <box name="Composition" row="350" col="500" width="100">
+        <relation type="composition" with="Dependency" />
+    </box>
+    <box name="Dependency"  row="125" col="460" width="100">
+        <relation type="dependency" with="Association" />
+    </box>
+</diagram>

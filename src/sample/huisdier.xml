@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<diagram>
+    <box name="Huisdier" row="10.0" col="230.0" width="340">
+        <attribute scope="instance" visibility="private" name="naam" type="String" />
+        <operation scope="instance" visibility="public" name="getNaam" type="String" />
+        <operation scope="instance" visibility="public" name="setNaam" type="void">
+            <attribute name="naam" type="String" />
+        </operation>
+    </box>
+    <box name="Kat" row="200.0" col="20.0" width="340">
+        <relation type="inheritance" with="Huisdier" />
+    </box>
+    <box name="Hond" row="200.0" col="440.0" width="340">
+        <relation type="inheritance" with="Huisdier" />
+        <relation type="dependency" with="Kat" />
+        <operation scope="instance" visibility="public" name="blafNaar" type="void">
+            <attribute name="kat" type="Kat" />
+        </operation>
+    </box>
+</diagram>
+
