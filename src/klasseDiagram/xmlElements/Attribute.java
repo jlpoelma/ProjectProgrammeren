@@ -1,4 +1,6 @@
-package sample;
+package klasseDiagram.xmlElements;
+
+import klasseDiagram.klasseDiagram;
 
 import javax.xml.bind.annotation.XmlAttribute;
 

@@ -1,16 +1,18 @@
-package sample;
+package klasseDiagram;
 
 import javafx.application.Platform;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import klasseDiagram.xmlElements.Attribute;
+import klasseDiagram.xmlElements.Box;
+import klasseDiagram.xmlElements.Diagram;
+import klasseDiagram.xmlElements.Operation;
 
 import javax.xml.bind.JAXBContext;
 import java.io.File;
-import java.io.InputStream;
 import java.util.List;
 
 public class klasseDiagramCompanion {
