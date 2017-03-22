@@ -5,6 +5,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.shape.Line?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="klasseDiagram.klasseDiagramCompanion">
    <top>
@@ -21,6 +22,11 @@
       </MenuBar>
    </top>
    <center>
-      <AnchorPane fx:id="paneel" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <AnchorPane fx:id="paneel" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Line fx:id="lineTest" endX="100.0" layoutX="206.0" layoutY="143.0" startX="-100.0" strokeDashOffset="8.0" />
+            <Line fx:id="arrow1" endX="100.0" layoutX="205.0" layoutY="143.0" startX="75.0" />
+            <Line fx:id="arrow2" endX="100.0" layoutX="204.0" layoutY="143.0" startX="75.0" />
+         </children></AnchorPane>
    </center>
 </BorderPane>

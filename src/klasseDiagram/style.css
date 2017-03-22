@@ -1,19 +1,19 @@
 VBox {
-    -fx-border-color: black;
-    -fx-border-radius: 5;
     -fx-alignment: top-center;
     -fx-padding: 5 0 5 0;
 }
 
-Separator{
-    -fx-fill: black;
-    -fx-pref-height: 4;
-    -fx-padding: 5 0 5 0;
-}
-
-Label{
-}
-
 #header{
     -fx-font-weight: bold;
+}
+
+#midden{
+    -fx-border-width: 1 0 1 0;
+    -fx-border-color: black;
+}
+
+#kader{
+    -fx-border-color: black;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
 }
