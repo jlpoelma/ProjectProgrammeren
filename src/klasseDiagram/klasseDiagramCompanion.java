@@ -27,12 +27,6 @@ public class klasseDiagramCompanion {
     public Line arrow2;
 
     public void initialize(){
-        arrow1.setEndX(lineTest.getEndX());
-        arrow2.setEndX(lineTest.getEndX());
-        arrow1.setStartX(lineTest.getEndX() - 20);
-        arrow2.setStartX(lineTest.getEndX() - 20);
-        arrow1.getTransforms().add(new Rotate(-30, arrow1.getEndX(), arrow1.getEndY()));
-        arrow2.getTransforms().add(new Rotate(30, arrow2.getEndX(), arrow2.getEndY()));
     }
 
     public Diagram xmlOmzetten(File file) throws Exception{
@@ -55,5 +49,9 @@ public class klasseDiagramCompanion {
         File file = chooser.showOpenDialog(null);
         Diagram diagram = xmlOmzetten(file);
         new KaderGenerator(paneel, diagram).generateKader();
+    }
+
+    public void takeScreenshot(){
+
     }
 }
