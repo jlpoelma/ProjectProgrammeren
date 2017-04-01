@@ -1,5 +1,6 @@
 package klasseDiagram.Generators;
 
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.AnchorPane;
@@ -32,8 +33,8 @@ public class KaderGenerator {
         visibilities.put("package", "~");
     }
 
-    public void generateKader(){
-        for (Box b: diagram.getBoxList()) {
+    public void generateKader() {
+        for (Box b : diagram.getBoxList()) {
             VBox kader = new VBox();
             kader.setId("kader");
             paneel.getChildren().add(kader);
@@ -62,6 +63,7 @@ public class KaderGenerator {
                 ) {
             Label label = new Label(visibilities.get(a.getVisibility()) + a.getName() + " : " + a.getType());
             attributeBox.getChildren().add(label);
+            System.out.println(label.getHeight());
         }
         attributeBox.setId("midden");
     }

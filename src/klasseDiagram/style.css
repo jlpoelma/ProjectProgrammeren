@@ -17,3 +17,7 @@ VBox {
     -fx-border-width: 1;
     -fx-border-radius: 5;
 }
+
+TilePane{
+    -fx-background-color: red;
+}
