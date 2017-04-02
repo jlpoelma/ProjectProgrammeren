@@ -8,8 +8,11 @@ import javafx.stage.Stage;
 
 public class klasseDiagram extends Application {
 
+    public static String parameters;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
+        parameters = getParameters().getRaw().toString();
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root));

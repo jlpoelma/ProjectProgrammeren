@@ -3,8 +3,7 @@ package klasseDiagram.Generators;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import klasseDiagram.xmlElements.Attribute;
 import klasseDiagram.xmlElements.Box;
 import klasseDiagram.xmlElements.Diagram;
@@ -44,6 +43,9 @@ public class KaderGenerator {
             generateHeader(b.getName(), kader);
             generateAttributes(b.getAttributeList(), kader);
             generateOperations(b.getOperationList(), kader);
+            kader.applyCss();
+            kader.layout();
+            System.out.println(kader.getBoundsInParent().getHeight());
         }
     }
 
@@ -63,7 +65,6 @@ public class KaderGenerator {
                 ) {
             Label label = new Label(visibilities.get(a.getVisibility()) + a.getName() + " : " + a.getType());
             attributeBox.getChildren().add(label);
-            System.out.println(label.getHeight());
         }
         attributeBox.setId("midden");
     }
