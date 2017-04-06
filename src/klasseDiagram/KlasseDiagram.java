@@ -6,15 +6,20 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class klasseDiagram extends Application {
+import java.util.List;
 
-    public static String parameters;
+public class KlasseDiagram extends Application {
+
+    public static List<String> parameters;
+
+    public void init(){
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        parameters = getParameters().getRaw().toString();
+        parameters = getParameters().getRaw();
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("KlasseDiagram");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }

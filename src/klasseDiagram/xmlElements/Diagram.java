@@ -8,10 +8,10 @@ import java.util.List;
 /**
  * Created by jonathan on 18/03/2017.
  */
-@XmlRootElement (name = "diagram")
+@XmlRootElement (name = "diagram") //xmlroot-element + naam specifiëren
 public class Diagram {
 
-    private List<Box> boxList = new ArrayList<>();
+    private List<Box> boxList = new ArrayList<>(); //verschillende boxen bijhouden
     public List<Box> getBoxList() {
         return boxList;
     }

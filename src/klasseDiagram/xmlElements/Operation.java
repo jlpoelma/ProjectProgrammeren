@@ -8,7 +8,7 @@ import java.util.List;
  * Created by jonathan on 19/03/2017.
  */
 public class Operation extends Attribute {
-    private List<Attribute> attributeList = new ArrayList<>();
+    private List<Attribute> attributeList = new ArrayList<>(); //attributen bijhouden
 
     public List<Attribute> getAttributeList() {
         return attributeList;

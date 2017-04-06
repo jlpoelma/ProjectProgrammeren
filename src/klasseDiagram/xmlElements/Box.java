@@ -18,6 +18,16 @@ public class Box {
 
     private float width;
 
+    private List<Relation> relationList = new ArrayList<>(); //relaties bijhouden
+
+    public List<Relation> getRelationList() {
+        return relationList;
+    }
+    @XmlElement (name = "relation")
+    public void setRelationList(List<Relation> relationList) {
+        this.relationList = relationList;
+    }
+
     private List<Attribute> attributeList = new ArrayList<>();
 
     private List<Operation> operationList = new ArrayList<>();
