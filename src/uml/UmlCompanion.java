@@ -1,4 +1,4 @@
-package klasseDiagram;
+package uml;
 
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
@@ -7,9 +7,9 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import klasseDiagram.Generators.KaderGenerator;
-import klasseDiagram.Generators.RelationGenerator;
-import klasseDiagram.xmlElements.Diagram;
+import uml.generators.BoxGenerator;
+import uml.generators.RelationGenerator;
+import uml.xmlElements.Diagram;
 
 import javax.imageio.ImageIO;
 import javax.xml.bind.JAXBContext;
@@ -18,17 +18,21 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class KlasseDiagramCompanion {
+/**
+ * Created by Jonathan Poelman
+ */
+
+public class UmlCompanion {
 
     public AnchorPane mainPane;
 
     public void initialize(){
-        if (KlasseDiagram.parameters.size() >= 1){ //als xml-bestand wordt gespecifieerd als argument, deze openen
-            File file = new File(KlasseDiagram.parameters.get(0));
+        if (Main.parameters.size() >= 1){ //als xml-bestand wordt gespecifieerd als argument, deze openen
+            File file = new File(Main.parameters.get(0));
             drawDiagram(file);
         }
-        if (KlasseDiagram.parameters.size() == 2){
-            File file = new File(KlasseDiagram.parameters.get(1));
+        if (Main.parameters.size() == 2){
+            File file = new File(Main.parameters.get(1));
             Platform.runLater(() -> {takeScreenshot(file);});
             exitProgram();
 
@@ -44,7 +48,7 @@ public class KlasseDiagramCompanion {
             return diagram;
         }
         catch(JAXBException e){
-            System.err.println(e.getMessage());
+            System.err.println(e);
         }
         return  diagram;
     }
@@ -60,13 +64,14 @@ public class KlasseDiagramCompanion {
     public void openFile() { //opent bestandsdialoog
         clearScreen();
         FileChooser chooser = new FileChooser();
-        File file = chooser.showOpenDialog(null);
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML-files", "*.xml"));
+        File file = chooser.showOpenDialog(mainPane.getScene().getWindow());
         drawDiagram(file);
     }
 
     public void drawDiagram(File file){
         Diagram diagram = convertXML(file);//xml omzetten
-        HashMap<String, VBox> boxes = new KaderGenerator().generateBox(mainPane, diagram);//Boxes genereren
+        HashMap<String, VBox> boxes = new BoxGenerator().generateBox(mainPane, diagram);//Boxes genereren
         Platform.runLater(() -> { //zorgt ervoor dat de hoogte achteraf correct kan opgevraagd worden
             new RelationGenerator().generateRelation(mainPane, diagram, boxes); //relaties (pijlen) genereren
         });
@@ -88,7 +93,8 @@ public class KlasseDiagramCompanion {
 
     public void saveImage(){
         FileChooser chooser = new FileChooser();
-        File file = chooser.showSaveDialog(null);
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG-files", "*.png"));
+        File file = chooser.showSaveDialog(mainPane.getScene().getWindow());
         takeScreenshot(file);
     }
 }

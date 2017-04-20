@@ -1,19 +1,19 @@
-package klasseDiagram.Generators;
+package uml.generators;
 
 import javafx.geometry.Point2D;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import klasseDiagram.Arrows.AssociationDependencyArrow;
-import klasseDiagram.Arrows.CompositionAggregationArrow;
-import klasseDiagram.Arrows.InheritanceRealizationArrow;
-import klasseDiagram.xmlElements.Box;
-import klasseDiagram.xmlElements.Diagram;
-import klasseDiagram.xmlElements.Relation;
+import uml.arrows.AssociationDependencyArrow;
+import uml.arrows.CompositionAggregationArrow;
+import uml.arrows.InheritanceRealizationArrow;
+import uml.xmlElements.Box;
+import uml.xmlElements.Diagram;
+import uml.xmlElements.Relation;
 
 import java.util.HashMap;
 
 /**
- * Created by Jonathan on 3/22/2017.
+ * Created by Jonathan Poelman on 3/22/2017.
  */
 public class RelationGenerator {
 

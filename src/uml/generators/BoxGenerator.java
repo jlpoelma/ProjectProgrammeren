@@ -1,25 +1,23 @@
-package klasseDiagram.Generators;
+package uml.generators;
 
-import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import klasseDiagram.xmlElements.Attribute;
-import klasseDiagram.xmlElements.Box;
-import klasseDiagram.xmlElements.Diagram;
-import klasseDiagram.xmlElements.Operation;
+import uml.xmlElements.Attribute;
+import uml.xmlElements.Box;
+import uml.xmlElements.Diagram;
+import uml.xmlElements.Operation;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by Jonathan on 3/22/2017.
+ * Created by Jonathan Poelman on 3/22/2017.
  */
-public class KaderGenerator {
+public class BoxGenerator {
 
     private HashMap<String, String> visibilities;
 
-    public KaderGenerator(){
+    public BoxGenerator(){
         visibilities = new HashMap<>();
         visibilities.put("public", "+");
         visibilities.put("private", "-");
@@ -32,7 +30,7 @@ public class KaderGenerator {
         HashMap<String, VBox> boxes = new HashMap<>();
         for (Box b : diagram.getBoxList()) {
             VBox kader = new VBox(); //nieuwe box aanmaken
-            kader.setId("kader"); //id voor css toevoegen
+            kader.setId("mainBox"); //id voor css toevoegen
             pane.getChildren().add(kader); //box toevoegen aan AnchorPane
             kader.setLayoutX(b.getCol()); //positie specifiëren
             kader.setLayoutY(b.getRow());

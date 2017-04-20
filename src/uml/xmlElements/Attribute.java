@@ -1,9 +1,9 @@
-package klasseDiagram.xmlElements;
+package uml.xmlElements;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
 /**
- * Created by jonathan on 19/03/2017.
+ * Created by Jonathan Poelman on 19/03/2017.
  */
 public class Attribute {
 

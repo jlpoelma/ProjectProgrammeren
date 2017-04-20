@@ -1,4 +1,4 @@
-package klasseDiagram;
+package uml;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,7 +8,11 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
-public class KlasseDiagram extends Application {
+/**
+ * Created by Jonathan Poelman
+ */
+
+public class Main extends Application {
 
     public static List<String> parameters;
 
@@ -18,8 +22,8 @@ public class KlasseDiagram extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         parameters = getParameters().getRaw();
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("KlasseDiagram");
+        Parent root = FXMLLoader.load(getClass().getResource("uml.fxml"));
+        primaryStage.setTitle("Main");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }

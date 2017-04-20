@@ -1,4 +1,4 @@
-package klasseDiagram.xmlElements;
+package uml.xmlElements;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by jonathan on 18/03/2017.
+ * Created by Jonathan Poelman on 18/03/2017.
  */
 @XmlRootElement (name = "diagram") //xmlroot-element + naam specifiëren
 public class Diagram {

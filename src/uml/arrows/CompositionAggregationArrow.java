@@ -1,13 +1,11 @@
-package klasseDiagram.Arrows;
+package uml.arrows;
 
 import javafx.geometry.Point2D;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Polygon;
 
-import java.awt.*;
-
 /**
- * Created by jonathan on 3/04/2017.
+ * Created by Jonathan Poelman on 3/04/2017.
  */
 public class CompositionAggregationArrow extends Arrow{
 
