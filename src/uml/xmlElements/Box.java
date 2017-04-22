@@ -1,5 +1,8 @@
 package uml.xmlElements;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
@@ -8,15 +11,17 @@ import java.util.List;
 /**
  * Created by Jonathan Poelman on 18/03/2017.
  */
-public class Box {
+public class Box implements Observable{
+
+    private List<InvalidationListener> listenerList = new ArrayList<>();
 
     private String name;
 
-    private float col;
+    private double col;
 
-    private float row;
+    private double row;
 
-    private float width;
+    private double width;
 
     private List<Relation> relationList = new ArrayList<>(); //relaties bijhouden
 
@@ -48,27 +53,32 @@ public class Box {
         this.name = name;
     }
 
-    public float getCol() {
+    public double getCol() {
         return col;
     }
     @XmlAttribute(name = "col")
-    public void setCol(float col) {
-        this.col = col;
+    public void setCol(double col) {
+        if (col != this.col) {
+            this.col = col;
+            fireInvalidationEvent();
+        }
     }
-
-    public float getRow() {
+    public double getRow() {
         return row;
     }
     @XmlAttribute(name = "row")
-    public void setRow(float row) {
-        this.row = row;
+    public void setRow(double row) {
+        if (row != this.row) {
+            this.row = row;
+            fireInvalidationEvent();
+        }
     }
 
-    public float getWidth() {
+    public double getWidth() {
         return width;
     }
     @XmlAttribute(name = "width")
-    public void setWidth(float width) {
+    public void setWidth(double width) {
         this.width = width;
     }
 
@@ -78,5 +88,21 @@ public class Box {
     @XmlElement(name = "operation")
     public void setOperationList(List<Operation> operationList) {
         this.operationList = operationList;
+    }
+
+    @Override
+    public void addListener(InvalidationListener listener) {
+        listenerList.add(listener);
+    }
+
+    @Override
+    public void removeListener(InvalidationListener listener) {
+        listenerList.remove(listener);
+    }
+
+    private void fireInvalidationEvent(){
+        for (InvalidationListener listener: listenerList){
+            listener .invalidated(this);
+        }
     }
 }

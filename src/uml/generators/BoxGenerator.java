@@ -1,7 +1,11 @@
 package uml.generators;
 
+import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import uml.BoxView;
 import uml.xmlElements.Attribute;
 import uml.xmlElements.Box;
 import uml.xmlElements.Diagram;
@@ -29,13 +33,13 @@ public class BoxGenerator {
     public HashMap<String, VBox> generateBox(AnchorPane pane, Diagram diagram) {
         HashMap<String, VBox> boxes = new HashMap<>();
         for (Box b : diagram.getBoxList()) {
-            VBox kader = new VBox(); //nieuwe box aanmaken
+            BoxView kader = new BoxView(b); //nieuwe box aanmaken
             kader.setId("mainBox"); //id voor css toevoegen
             pane.getChildren().add(kader); //box toevoegen aan AnchorPane
             kader.setLayoutX(b.getCol()); //positie specifiëren
             kader.setLayoutY(b.getRow());
             kader.setPrefWidth(b.getWidth()); //breedte instellen
-            generateHeader(b.getName(), kader); //titel toevoegen
+            kader.setHeader(b.getName());
             generateAttributes(b.getAttributeList(), kader); //attributen toevoegen
             generateOperations(b.getOperationList(), kader); //methodes toevoegen
             kader.applyCss(); //css toepassen zodat de hoogte kan opgevraagd worden
@@ -46,40 +50,20 @@ public class BoxGenerator {
         return boxes; //hashmap teruggeven voor de RelationGenerator
     }
 
-    public void generateHeader(String header, VBox kader){
-        VBox headerBox = new VBox(); //vbox voor header aanmaken
-        Label label = new Label(header); //titel instellen
-        label.setId("header");
-        kader.getChildren().add(headerBox); //headerVBox toevoegen
-        headerBox.getChildren().add(label); //titel toevoegen
-    }
-
-    public void generateAttributes(List<Attribute> attributes, VBox kader){
-        VBox attributeBox = new VBox(); //vbox voor attributen aanmaken
-        kader.getChildren().add(attributeBox);
+    public void generateAttributes(List<Attribute> attributes, BoxView kader){
         for (Attribute a: attributes //voor elk attributen de juiste tekst toevoegen
                 ) {
-            Label label = new Label(visibilities.get(a.getVisibility()) + a.getName() + " : " + a.getType());
-            attributeBox.getChildren().add(label);
+            kader.addAttribute(a);
         }
-        attributeBox.setId("middle"); //midden als css-id toevoegen zodat de juiste borders worden ingesteld
     }
 
-    public void generateOperations(List<Operation> operations, VBox kader){
-        VBox operationBox = new VBox(); //vbox voor methodes aanmaken
-        kader.getChildren().add(operationBox);
-        for (Operation o: operations){ //voor elke methodes juiste tekst toevoegen
-            if (o.getAttributeList().isEmpty()) { //methode heeft geen attributen
-                Label label = new Label(visibilities.get(o.getVisibility()) + o.getName() + " : " + o.getType());
-                operationBox.getChildren().add(label);
-            }
-            else{ //methode heeft attributen
-                for (Attribute a: o.getAttributeList()) { //voor elk attribuuut de methode toevoegen
-                    Label label = new Label(visibilities.get(o.getVisibility()) + o.getName() +
-                            "(" + a.getName() + " : " + a.getType() + ")" + " : " + o.getType());
-                    operationBox.getChildren().add(label);
-                }
-            }
+    public void generateOperations(List<Operation> operations, BoxView kader) {
+        for (Operation o : operations) { //voor elke methodes juiste tekst toevoegen
+            kader.addOperation(o);
         }
     }
+
+    public void makeResizable(BoxView boxView){
+    }
+
 }

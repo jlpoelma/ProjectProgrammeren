@@ -25,6 +25,7 @@ import java.util.HashMap;
 public class UmlCompanion {
 
     public AnchorPane mainPane;
+    public Diagram diagram;
 
     public void initialize(){
         if (Main.parameters.size() >= 1){ //als xml-bestand wordt gespecifieerd als argument, deze openen
@@ -39,18 +40,15 @@ public class UmlCompanion {
         }
     }
 
-    public Diagram convertXML(File file) { //methode die xml inlaadt in de bijbehorende klassen
-        Diagram diagram = null;
+    public void convertXML(File file) { //methode die xml inlaadt in de bijbehorende klassen
         try {
             JAXBContext jc = JAXBContext.newInstance(Diagram.class);
             diagram = (Diagram) jc.createUnmarshaller().unmarshal(
                     file);
-            return diagram;
         }
         catch(JAXBException e){
             System.err.println(e);
         }
-        return  diagram;
     }
 
     public void exitProgram(){
@@ -70,7 +68,7 @@ public class UmlCompanion {
     }
 
     public void drawDiagram(File file){
-        Diagram diagram = convertXML(file);//xml omzetten
+        convertXML(file);
         HashMap<String, VBox> boxes = new BoxGenerator().generateBox(mainPane, diagram);//Boxes genereren
         Platform.runLater(() -> { //zorgt ervoor dat de hoogte achteraf correct kan opgevraagd worden
             new RelationGenerator().generateRelation(mainPane, diagram, boxes); //relaties (pijlen) genereren
@@ -96,5 +94,22 @@ public class UmlCompanion {
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG-files", "*.png"));
         File file = chooser.showSaveDialog(mainPane.getScene().getWindow());
         takeScreenshot(file);
+    }
+
+    public void saveFileAs(){
+        FileChooser chooser = new FileChooser();
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML-files", "*.xml"));
+        File file = chooser.showSaveDialog(mainPane.getScene().getWindow());
+        javaToXML(file);
+    }
+
+    public void javaToXML(File file){
+        try {
+            JAXBContext jc = JAXBContext.newInstance(Diagram.class);
+            jc.createMarshaller().marshal(diagram, file);
+        }
+        catch(JAXBException e){
+            System.err.println(e);
+        }
     }
 }
