@@ -17,30 +17,30 @@ import java.util.HashMap;
  */
 public class RelationGenerator {
 
-    public Point2D calculateMiddle(VBox kader){ //midden van de VBox berekenen
+    /*public Point2D calculateMiddle(VBox kader){ //midden van de VBox berekenen
         double x1 = kader.getLayoutX() + kader.getPrefWidth()/2;
         double y1 = kader.getLayoutY() + kader.getBoundsInParent().getHeight()/2;
         return new Point2D(x1, y1); //juiste coördinaat teruggeven
-    }
+    }*/
 
-    public void generateRelation(AnchorPane pane, Diagram diagram, HashMap<String, VBox> boxes){
+    public void generateRelation(AnchorPane pane, Diagram diagram, HashMap<String, Box> boxes){
         for (Box b: diagram.getBoxList()) { //voor elke box juiste relaties toevoegen
             for (Relation r : b.getRelationList()) {
-                VBox startBox = boxes.get(b.getName()); //start-vbox ophalen
-                VBox destinationBox = boxes.get(r.getWith()); //aankomst-vbox ophalen
-                Point2D middleStart = calculateMiddle(startBox); //midden van start en aankomst berekenen
+                Box startBox = boxes.get(b.getName()); //start-vbox ophalen
+                Box destinationBox = boxes.get(r.getWith()); //aankomst-vbox ophalen
+                /*Point2D middleStart = calculateMiddle(startBox); //midden van start en aankomst berekenen
                 Point2D middleDestination = calculateMiddle(destinationBox);
                 double angleStart = calculateAngle(middleStart, middleDestination); //starthoek van pijl berekenen
                 double angleDestination = (angleStart + 180)%360; //aankomsthoek van pijl berekenen
                 Point2D start = calculateIntersection(startBox, middleStart, middleDestination, angleStart); /*het snijpunt van de
-                pijl met de start- en aankomstVBox berekenen*/
-                Point2D destination = calculateIntersection(destinationBox, middleDestination, middleStart, angleDestination);
-                setArrow(start, destination, r, pane); //pijl toevoegen aan AnchorPane
+                pijl met de start- en aankomstVBox berekenen
+                Point2D destination = calculateIntersection(destinationBox, middleDestination, middleStart, angleDestination);*/
+                setArrow(startBox, destinationBox, r, pane); //pijl toevoegen aan AnchorPane
             }
         }
     }
 
-    public double calculateAngle(Point2D start, Point2D end){
+    /*public double calculateAngle(Point2D start, Point2D end){
         double angle = Math.toDegrees(Math.atan2(-(end.getY() - start.getY()), end.getX() - start.getX()));
         //berekent hoek van rechte
         if (angle < 0){
@@ -78,15 +78,15 @@ public class RelationGenerator {
             x = start.getX() - (start.getY() - y)/m;
         } //controleren tussen welke twee punten het snijpunt zit + dit snijpunt berekenen
         return new Point2D(x, y);
-    }
+    }*/
 
-    public void setArrow(Point2D start, Point2D destination, Relation relation, AnchorPane pane){
+    public void setArrow(Box startBox, Box destinationBox, Relation relation, AnchorPane pane){
         if (relation.getType().matches("association|dependency")){
-            new AssociationDependencyArrow(start, destination, relation.getType().equals("dependency")).create(pane);
+            new AssociationDependencyArrow(startBox, destinationBox, relation.getType().equals("dependency")).create(pane);
         } else if (relation.getType().matches("inheritance|realization")){
-            new InheritanceRealizationArrow(start, destination, relation.getType().equals("realization")).create(pane);
+            new InheritanceRealizationArrow(startBox, destinationBox, relation.getType().equals("realization")).create(pane);
         } else{
-            new CompositionAggregationArrow(start, destination, relation.getType().equals("aggregation")).create(pane);
+            new CompositionAggregationArrow(startBox, destinationBox, relation.getType().equals("aggregation")).create(pane);
         } //juiste pijl toevoegen afhankelijk van het gespecifieerde type
     }
 

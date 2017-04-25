@@ -30,7 +30,7 @@ public class UmlCompanion {
 
     public AnchorPane mainPane;
     private Diagram diagram;
-    private HashMap<String, VBox> classes;
+    private HashMap<String, Box> classes;
 
     public void initialize(){
         if (Main.parameters.size() >= 1){ //als xml-bestand wordt gespecifieerd als argument, deze openen
@@ -138,7 +138,7 @@ public class UmlCompanion {
             box.setCol(Double.parseDouble(input.getColumn().getText()));
             box.setRow(Double.parseDouble(input.getRow().getText()));
             box.setWidth(Double.parseDouble(input.getWidthValue().getText()));
-            classes.put(box.getName(), newBox);
+            classes.put(box.getName(), box);
         }
     }
 

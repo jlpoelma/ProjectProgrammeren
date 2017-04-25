@@ -1,8 +1,9 @@
 package uml.arrows;
 
-import javafx.geometry.Point2D;
+import javafx.beans.Observable;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
+import uml.xmlElements.Box;
 
 /**
  * Created by Jonathan Poelman on 3/22/2017.
@@ -12,27 +13,25 @@ public class AssociationDependencyArrow extends Arrow{
     private Line arrowSide1;
     private Line arrowSide2;
 
-    public AssociationDependencyArrow(Point2D start, Point2D destination, boolean dotted){
+    public AssociationDependencyArrow(Box start, Box destination, boolean dotted){
         super(start, destination);
-        Point2D point = new Point2D(4, 4);
-
-
         if (dotted){
             arrowLine.setId("dotted"); //specifieert of de hoofdlijn al dan niet gestippeld is
         }
-        arrowSide1 = createArrowSide();
-        arrowSide2 = createArrowSide();
+        arrowSide1 = new Line();
+        arrowSide2 = new Line();
+        modifyArrowSide();
+    }
+
+    public void modifyArrowSide(){ //maakt een pijlkop zijde aan
+        arrowSide1.setEndY(arrowLine.getEndY()); //stelt eindpunt van pijlkop in (zelfde als hoofdlijn
+        arrowSide1.setEndX(arrowLine.getEndX());
+        arrowSide2.setEndY(arrowLine.getEndY()); //stelt eindpunt van pijlkop in (zelfde als hoofdlijn
+        arrowSide2.setEndX(arrowLine.getEndX());
         arrowSide1.setStartX(pointRight.getX()); //stelt startpunt van pijlkop in
         arrowSide1.setStartY(pointRight.getY());
         arrowSide2.setStartX(pointLeft.getX());
         arrowSide2.setStartY(pointLeft.getY());
-    }
-
-    public Line createArrowSide(){ //maakt een pijlkop zijde aan
-        Line arrowSide = new Line();
-        arrowSide.setEndY(arrowLine.getEndY()); //stelt eindpunt van pijlkop in (zelfde als hoofdlijn
-        arrowSide.setEndX(arrowLine.getEndX());
-        return arrowSide;
     }
 
     public void create(AnchorPane pane){ //voegt hoofdlijn en eindpijltjes toe
@@ -42,4 +41,9 @@ public class AssociationDependencyArrow extends Arrow{
     }
 
 
+    @Override
+    public void invalidated(Observable observable) {
+        setLine();
+        modifyArrowSide();
+    }
 }

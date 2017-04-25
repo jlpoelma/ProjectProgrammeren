@@ -30,8 +30,8 @@ public class BoxGenerator {
         visibilities.put("package", "~");
     }
 
-    public HashMap<String, VBox> generateBoxes(AnchorPane pane, Diagram diagram) {
-        HashMap<String, VBox> boxes = new HashMap<>();
+    public HashMap<String, Box> generateBoxes(AnchorPane pane, Diagram diagram) {
+        HashMap<String, Box> boxes = new HashMap<>();
         for (Box b : diagram.getBoxList()) {
             BoxView kader = createBox(pane, b);
             kader.setHeader(b.getName());
@@ -39,7 +39,7 @@ public class BoxGenerator {
             generateOperations(b.getOperationList(), kader); //methodes toevoegen
             kader.applyCss(); //css toepassen zodat de hoogte kan opgevraagd worden
             kader.layout();
-            boxes.put(b.getName(), kader); /*box aan hashmap met als sleutel de naam toevoegen om makkelijker relaties
+            boxes.put(b.getName(), b); /*box aan hashmap met als sleutel de naam toevoegen om makkelijker relaties
              te stellen*/
         }
         return boxes; //hashmap teruggeven voor de RelationGenerator
@@ -64,5 +64,7 @@ public class BoxGenerator {
         }
     }
 
+    public void makeResizable(BoxView boxView){
+    }
 
 }

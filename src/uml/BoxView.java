@@ -34,7 +34,7 @@ public class BoxView extends VBox implements InvalidationListener {
         setLayoutX(model.getCol()); //positie specifiëren
         setLayoutY(model.getRow());
         setPrefWidth(model.getWidth()); //breedte instellen
-        //makeDraggable();
+        makeDraggable();
         makeResizable();
         this.setId("mainBox"); //id voor css toevoegen
         this.model = model;

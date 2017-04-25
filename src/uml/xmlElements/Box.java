@@ -107,6 +107,10 @@ public class Box implements Observable{
         listenerList.remove(listener);
     }
 
+    public List getListenerList(){
+        return listenerList;
+    }
+
     private void fireInvalidationEvent(){
         for (InvalidationListener listener: listenerList){
             listener .invalidated(this);
