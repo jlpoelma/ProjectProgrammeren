@@ -8,17 +8,23 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uml.UmlCompanion">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@css/main.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uml.UmlCompanion">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
+                  <Menu mnemonicParsing="false" text="New..">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Diagram" />
+                        <MenuItem mnemonicParsing="false" onAction="#newClass" text="Class" />
+                    </items>
+                  </Menu>
               <MenuItem mnemonicParsing="false" onAction="#openFile" text="Open" />
+                  <MenuItem mnemonicParsing="false" onAction="#saveFileAs" text="Save as..." />
+                  <MenuItem mnemonicParsing="false" onAction="#saveImage" text="Screenshot..." />
                   <MenuItem mnemonicParsing="false" onAction="#clearScreen" text="Close" />
                   <MenuItem mnemonicParsing="false" onAction="#exitProgram" text="Exit" />
-                  <MenuItem mnemonicParsing="false" onAction="#saveImage" text="Screenshot..." />
-                  <MenuItem mnemonicParsing="false" onAction="#saveFileAs" text="Save as..." />
             </items>
           </Menu>
         </menus>

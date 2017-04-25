@@ -2,11 +2,16 @@ package uml;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import uml.generators.BoxGenerator;
 import uml.xmlElements.Attribute;
 import uml.xmlElements.Box;
@@ -26,7 +31,11 @@ public class BoxView extends VBox implements InvalidationListener {
     private HashMap<String, String> visibilities;
 
     public BoxView(Box model){
-        makeDraggable();
+        setLayoutX(model.getCol()); //positie specifiëren
+        setLayoutY(model.getRow());
+        setPrefWidth(model.getWidth()); //breedte instellen
+        //makeDraggable();
+        makeResizable();
         this.setId("mainBox"); //id voor css toevoegen
         this.model = model;
         model.addListener(this);
@@ -49,13 +58,13 @@ public class BoxView extends VBox implements InvalidationListener {
         setPrefWidth(model.getWidth());
         setLayoutX(model.getCol());
         setLayoutY(model.getRow());
+        setHeader(model.getName());
     }
 
     public void setHeader(String header){
-        TextField title = new TextField(header);
+        Label title = new Label(header);
         title.setId("header");
-        top.getChildren().add(title);
-        top.getChildren().add(new Button("edit"));
+        top.getChildren().setAll(title);
     }
 
     public void addAttribute(Attribute attribute){
@@ -88,17 +97,17 @@ public class BoxView extends VBox implements InvalidationListener {
 
     public void makeDraggable(){
         final Delta delta = new Delta();
-        this.setOnMousePressed(event -> {
+        setOnMousePressed(event -> {
             this.setCursor(Cursor.MOVE);
             delta.x = this.getLayoutX() - event.getSceneX();
             delta.y = this.getLayoutY() - event.getSceneY();
         });
 
-        this.setOnMouseReleased(event -> {
+        setOnMouseReleased(event -> {
             this.setCursor(Cursor.HAND);
         });
 
-        this.setOnMouseEntered(event -> {
+        setOnMouseEntered(event -> {
             this.setCursor(Cursor.HAND);
         });
 
@@ -108,7 +117,32 @@ public class BoxView extends VBox implements InvalidationListener {
         });
     }
 
+    public void makeResizable(){
+        Rectangle resizeHandleArea = new Rectangle();
+        resizeHandleArea.setWidth(1);
+        resizeHandleArea.setOpacity(0.0);
+        resizeHandleArea.heightProperty().bind(heightProperty());
+        resizeHandleArea.xProperty().bind(layoutXProperty().add(widthProperty()));
+        resizeHandleArea.yProperty().bind(layoutYProperty());
+        this.parentProperty().addListener((obs, oldParent, newParent) -> {
+            ((Pane)newParent).getChildren().add(resizeHandleArea);
+        });
 
+        final Delta delta = new Delta();
+        resizeHandleArea.setOnMousePressed(event -> {
+            delta.x = this.getPrefWidth() - event.getSceneX();
+        });
 
+        resizeHandleArea.setOnMouseReleased(event -> {
+            resizeHandleArea.setCursor(Cursor.HAND);
+        });
 
+        resizeHandleArea.setOnMouseEntered(event -> {
+            resizeHandleArea.setCursor(Cursor.H_RESIZE);
+        });
+
+        resizeHandleArea.setOnMouseDragged(event -> {
+            model.setWidth(delta.x + event.getSceneX());
+        });
+    }
 }

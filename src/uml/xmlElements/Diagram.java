@@ -19,4 +19,8 @@ public class Diagram {
     public void setBoxList(List<Box> boxList) {
         this.boxList = boxList;
     }
+
+    public void addBox(Box box){
+        boxList.add(box);
+    }
 }

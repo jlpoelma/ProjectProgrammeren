@@ -30,15 +30,10 @@ public class BoxGenerator {
         visibilities.put("package", "~");
     }
 
-    public HashMap<String, VBox> generateBox(AnchorPane pane, Diagram diagram) {
+    public HashMap<String, VBox> generateBoxes(AnchorPane pane, Diagram diagram) {
         HashMap<String, VBox> boxes = new HashMap<>();
         for (Box b : diagram.getBoxList()) {
-            BoxView kader = new BoxView(b); //nieuwe box aanmaken
-            kader.setId("mainBox"); //id voor css toevoegen
-            pane.getChildren().add(kader); //box toevoegen aan AnchorPane
-            kader.setLayoutX(b.getCol()); //positie specifiëren
-            kader.setLayoutY(b.getRow());
-            kader.setPrefWidth(b.getWidth()); //breedte instellen
+            BoxView kader = createBox(pane, b);
             kader.setHeader(b.getName());
             generateAttributes(b.getAttributeList(), kader); //attributen toevoegen
             generateOperations(b.getOperationList(), kader); //methodes toevoegen
@@ -48,6 +43,12 @@ public class BoxGenerator {
              te stellen*/
         }
         return boxes; //hashmap teruggeven voor de RelationGenerator
+    }
+
+    public BoxView createBox(AnchorPane pane, Box box){
+        BoxView kader = new BoxView(box);
+        pane.getChildren().add(kader); //box toevoegen aan AnchorPane
+        return kader;
     }
 
     public void generateAttributes(List<Attribute> attributes, BoxView kader){
@@ -63,7 +64,5 @@ public class BoxGenerator {
         }
     }
 
-    public void makeResizable(BoxView boxView){
-    }
 
 }

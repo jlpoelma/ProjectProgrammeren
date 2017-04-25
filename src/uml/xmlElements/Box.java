@@ -50,7 +50,10 @@ public class Box implements Observable{
     }
     @XmlAttribute(name = "name")
     public void setName(String name) {
-        this.name = name;
+        if (name != this.name) {
+            this.name = name;
+            fireInvalidationEvent();
+        }
     }
 
     public double getCol() {
@@ -79,7 +82,11 @@ public class Box implements Observable{
     }
     @XmlAttribute(name = "width")
     public void setWidth(double width) {
-        this.width = width;
+
+        if (width != this.width) {
+            this.width = width;
+            fireInvalidationEvent();
+        }
     }
 
     public List<Operation> getOperationList() {

@@ -3,12 +3,16 @@ package uml;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import uml.generators.BoxGenerator;
 import uml.generators.RelationGenerator;
+import uml.popupWindows.ClassDialog;
+import uml.popupWindows.RelationDialog;
+import uml.xmlElements.Box;
 import uml.xmlElements.Diagram;
 
 import javax.imageio.ImageIO;
@@ -25,7 +29,8 @@ import java.util.HashMap;
 public class UmlCompanion {
 
     public AnchorPane mainPane;
-    public Diagram diagram;
+    private Diagram diagram;
+    private HashMap<String, VBox> classes;
 
     public void initialize(){
         if (Main.parameters.size() >= 1){ //als xml-bestand wordt gespecifieerd als argument, deze openen
@@ -69,9 +74,9 @@ public class UmlCompanion {
 
     public void drawDiagram(File file){
         convertXML(file);
-        HashMap<String, VBox> boxes = new BoxGenerator().generateBox(mainPane, diagram);//Boxes genereren
+        classes = new BoxGenerator().generateBoxes(mainPane, diagram);//Boxes genereren
         Platform.runLater(() -> { //zorgt ervoor dat de hoogte achteraf correct kan opgevraagd worden
-            new RelationGenerator().generateRelation(mainPane, diagram, boxes); //relaties (pijlen) genereren
+            new RelationGenerator().generateRelation(mainPane, diagram, classes); //relaties (pijlen) genereren
         });
 
     }
@@ -111,5 +116,36 @@ public class UmlCompanion {
         catch(JAXBException e){
             System.err.println(e);
         }
+    }
+
+    public void newDiagram(){
+        clearScreen();
+        diagram = new Diagram();
+        classes = new HashMap<>();
+    }
+
+    public void newClass(){
+
+        //Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Delete  ?", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+        ClassDialog input = new ClassDialog();
+        input.showAndWait();
+
+        if (input.getResult() == ButtonType.OK){
+            Box box = new Box();
+            BoxView newBox = new BoxView(box);
+            mainPane.getChildren().add(newBox);
+            box.setName(input.getName().getText());
+            box.setCol(Double.parseDouble(input.getColumn().getText()));
+            box.setRow(Double.parseDouble(input.getRow().getText()));
+            box.setWidth(Double.parseDouble(input.getWidthValue().getText()));
+            classes.put(box.getName(), newBox);
+        }
+    }
+
+    public void newRelation(){
+        RelationDialog input = new RelationDialog();
+        input.showAndWait();
+
+
     }
 }
