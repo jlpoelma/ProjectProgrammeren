@@ -108,7 +108,7 @@ public abstract class Arrow implements InvalidationListener{
         double m = (destination.getY() - start.getY())/(destination.getX() - start.getX()); //rico van pijl berekenen
         double x;
         double y;
-        if (hoek >= angle4){
+        if (hoek >= angle4 || hoek <= angle1){
             x = point4.getX();
             y = start.getY() - m*(start.getX() - x);
         } else if (hoek >= angle3){
@@ -122,6 +122,10 @@ public abstract class Arrow implements InvalidationListener{
             x = start.getX() - (start.getY() - y)/m;
         } //controleren tussen welke twee punten het snijpunt zit + dit snijpunt berekenen
         return new Point2D(x, y);
+    }
+
+    public void modifyArrowHead(){
+
     }
 
     public void invalidated(){

@@ -5,10 +5,7 @@ import javafx.beans.Observable;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
@@ -18,6 +15,7 @@ import uml.xmlElements.Box;
 import uml.xmlElements.Operation;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 /**
  * Created by Jonathan on 4/21/2017.
@@ -36,6 +34,7 @@ public class BoxView extends VBox implements InvalidationListener {
         setPrefWidth(model.getWidth()); //breedte instellen
         makeDraggable();
         makeResizable();
+        setOnRightClick();
         this.setId("mainBox"); //id voor css toevoegen
         this.model = model;
         model.addListener(this);
@@ -143,6 +142,20 @@ public class BoxView extends VBox implements InvalidationListener {
 
         resizeHandleArea.setOnMouseDragged(event -> {
             model.setWidth(delta.x + event.getSceneX());
+        });
+    }
+
+    public void setOnRightClick(){
+        final ContextMenu contextMenu = new ContextMenu();
+        MenuItem rename = new MenuItem("Rename");
+        contextMenu.getItems().add(rename);
+        rename.setOnAction(event -> {
+            TextInputDialog inputDialog = new TextInputDialog();
+            Optional<String> result = inputDialog.showAndWait();
+            result.ifPresent(s -> this.getModel().setName(s));
+        });
+        this.setOnContextMenuRequested(event -> {
+            contextMenu.show(this, event.getScreenX(), event.getScreenY());
         });
     }
 }
