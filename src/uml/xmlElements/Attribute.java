@@ -1,11 +1,15 @@
 package uml.xmlElements;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+
 import javax.xml.bind.annotation.XmlAttribute;
+import java.util.ArrayList;
 
 /**
  * Created by Jonathan Poelman on 19/03/2017.
  */
-public class Attribute {
+public class Attribute implements Observable{
 
     private String scope;
 
@@ -15,19 +19,27 @@ public class Attribute {
 
     private String type;
 
+    private ArrayList<InvalidationListener> listeners = new ArrayList<>();
+
     public String getScope() {
         return scope;
     }
     @XmlAttribute(name = "scope")
     public void setScope(String scope) {
-        this.scope = scope;
+        if(scope != this.scope) {
+            this.scope = scope;
+            fireInvalidationEvent();
+        }
     }
     public String getVisibility() {
         return visibility;
     }
     @XmlAttribute(name = "visibility")
     public void setVisibility(String visibility) {
-        this.visibility = visibility;
+        if(visibility != this.visibility) {
+            this.visibility = visibility;
+            fireInvalidationEvent();
+        }
     }
 
     public String getName() {
@@ -35,7 +47,10 @@ public class Attribute {
     }
     @XmlAttribute(name = "name")
     public void setName(String name) {
-        this.name = name;
+        if(name != this.name) {
+            this.name = name;
+            fireInvalidationEvent();
+        }
     }
 
     public String getType() {
@@ -43,6 +58,25 @@ public class Attribute {
     }
     @XmlAttribute(name = "type")
     public void setType(String type) {
-        this.type = type;
+        if(type != this.type) {
+            this.type = type;
+            fireInvalidationEvent();
+        }
+    }
+
+    @Override
+    public void addListener(InvalidationListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void removeListener(InvalidationListener listener) {
+        listeners.remove(listener);
+    }
+
+    public void fireInvalidationEvent(){
+        for(InvalidationListener i: listeners){
+                i .invalidated(this);
+        }
     }
 }

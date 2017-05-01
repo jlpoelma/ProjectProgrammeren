@@ -6,12 +6,11 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import uml.generators.BoxGenerator;
 import uml.generators.RelationGenerator;
 import uml.popupWindows.ClassDialog;
-import uml.popupWindows.RelationDialog;
+import uml.views.BoxView;
 import uml.xmlElements.Box;
 import uml.xmlElements.Diagram;
 

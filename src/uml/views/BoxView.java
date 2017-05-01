@@ -1,4 +1,4 @@
-package uml;
+package uml.views;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -7,9 +7,11 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import uml.UmlCompanion;
 import uml.arrows.Arrow;
 import uml.generators.BoxGenerator;
 import uml.generators.RelationGenerator;
@@ -41,18 +43,14 @@ public class BoxView extends VBox implements InvalidationListener {
         this.model = model;
         model.addListener(this);
         top = new VBox();
-        middle = new VBox();
+        middle = new VBox(5);
         middle.setId("middle");
-        bottom = new VBox();
+        bottom = new VBox(5);
         getChildren().add(top);
         getChildren().add(middle);
         getChildren().add(bottom);
-        visibilities = new HashMap<>();
-        visibilities.put("public", "+");
-        visibilities.put("private", "-");
-        visibilities.put("protected", "#");
-        visibilities.put("derived", "/");
-        visibilities.put("package", "~");
+        setAttributes();
+        setOperations();
         this.invalidated(null);
     }
     @Override
@@ -69,22 +67,29 @@ public class BoxView extends VBox implements InvalidationListener {
         top.getChildren().setAll(title);
     }
 
-    public void addAttribute(Attribute attribute){
-        Label label = new Label(visibilities.get(attribute.getVisibility()) + attribute.getName() + " : " + attribute.getType());
-        middle.getChildren().add(label);
+    public void setAttributes(){
+        Button add = new Button("Add attribute...");
+        middle.getChildren().add(add);
+        add.setOnAction(event -> {
+            setAttributeButton();
+        });
+        for (Attribute a: model.getAttributeList()) {
+            addAttribute(a, middle);
+        }
     }
 
-    public void addOperation(Operation operation){
-        if (operation.getAttributeList().isEmpty()) { //methode heeft geen attributen
-            Label label = new Label(visibilities.get(operation.getVisibility()) + operation.getName() + " : " + operation.getType());
-            bottom.getChildren().add(label);
-        }
-        else{ //methode heeft attributen
-            for (Attribute a: operation.getAttributeList()) { //voor elk attribuuut de methode toevoegen
-                Label label = new Label(visibilities.get(operation.getVisibility()) + operation.getName() +
-                        "(" + a.getName() + " : " + a.getType() + ")" + " : " + operation.getType());
-                bottom.getChildren().add(label);
-            }
+    public void addAttribute(Attribute attribute, VBox vBox){
+        vBox.getChildren().add(vBox.getChildren().size() - 1, new AttributeView(attribute, getModel()));
+    }
+
+    public void setOperations(){
+        Button add = new Button("Add operation...");
+        bottom.getChildren().add(add);
+        add.setOnAction(event -> {
+            setOperationButton();
+        });
+        for (Operation o: model.getOperationList()) {
+            addAttribute(o, bottom);
         }
     }
 
@@ -154,8 +159,7 @@ public class BoxView extends VBox implements InvalidationListener {
         ContextMenu contextMenu = new ContextMenu();
         setRenameButton(contextMenu);
         setDeleteButton(contextMenu);
-        setAttributeButton(contextMenu);
-        setRelationButton(contextMenu);
+        setCreateRelationButton(contextMenu);
         this.setOnContextMenuRequested(event -> {
             contextMenu.show(this, event.getScreenX(), event.getScreenY());
         });
@@ -187,10 +191,7 @@ public class BoxView extends VBox implements InvalidationListener {
         });
     }
 
-    public void setAttributeButton(ContextMenu contextMenu){
-        MenuItem addAttribute = new MenuItem("Add attribute...");
-        contextMenu.getItems().add(addAttribute);
-        addAttribute.setOnAction(event -> {
+    public void setAttributeButton(){
             AddAttributeDialog dialog = new AddAttributeDialog();
             dialog.showAndWait();
             if (dialog.getResult() == ButtonType.OK){
@@ -199,15 +200,12 @@ public class BoxView extends VBox implements InvalidationListener {
                 attribute.setScope(dialog.getScope().getValue().toString());
                 attribute.setType(dialog.getType().getText());
                 attribute.setVisibility(dialog.getVisibility().getValue().toString());
-                addAttribute(attribute);
-                applyCss(); //css toepassen zodat de hoogte kan opgevraagd worden
-                layout();
+                addAttribute(attribute, middle);
                 model.addAttribute(attribute);
             }
-        });
     }
 
-    public void setRelationButton(ContextMenu contextMenu){
+    public void setCreateRelationButton(ContextMenu contextMenu){
         MenuItem addRelation = new MenuItem("Add relation...");
         contextMenu.getItems().add(addRelation);
         addRelation.setOnAction(event -> {
@@ -222,5 +220,9 @@ public class BoxView extends VBox implements InvalidationListener {
                 new RelationGenerator().setArrow(this.getModel(), UmlCompanion.classes.get(relation.getWith()), relation, pane);
             }
         });
+    }
+
+    public void setOperationButton(){
+
     }
 }

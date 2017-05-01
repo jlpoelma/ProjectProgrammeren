@@ -1,11 +1,7 @@
 package uml.generators;
 
-import javafx.event.EventHandler;
-import javafx.scene.Cursor;
-import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import uml.BoxView;
+import uml.views.BoxView;
 import uml.xmlElements.Attribute;
 import uml.xmlElements.Box;
 import uml.xmlElements.Diagram;
@@ -21,23 +17,10 @@ public class BoxGenerator {
 
     private HashMap<String, String> visibilities;
 
-    public BoxGenerator(){
-        visibilities = new HashMap<>();
-        visibilities.put("public", "+");
-        visibilities.put("private", "-");
-        visibilities.put("protected", "#");
-        visibilities.put("derived", "/");
-        visibilities.put("package", "~");
-    }
-
     public HashMap<String, Box> generateBoxes(AnchorPane pane, Diagram diagram) {
         HashMap<String, Box> boxes = new HashMap<>();
         for (Box b : diagram.getBoxList()) {
             BoxView kader = createBox(pane, b, diagram);
-            kader.applyCss();
-            kader.layout();
-            generateAttributes(b.getAttributeList(), kader); //attributen toevoegen
-            generateOperations(b.getOperationList(), kader); //methodes toevoegen
             boxes.put(b.getName(), b); /*box aan hashmap met als sleutel de naam toevoegen om makkelijker relaties
              te stellen*/
         }
@@ -49,21 +32,4 @@ public class BoxGenerator {
         pane.getChildren().add(kader); //box toevoegen aan AnchorPane
         return kader;
     }
-
-    public void generateAttributes(List<Attribute> attributes, BoxView kader){
-        for (Attribute a: attributes //voor elk attributen de juiste tekst toevoegen
-                ) {
-            kader.addAttribute(a);
-        }
-    }
-
-    public void generateOperations(List<Operation> operations, BoxView kader) {
-        for (Operation o : operations) { //voor elke methodes juiste tekst toevoegen
-            kader.addOperation(o);
-        }
-    }
-
-    public void makeResizable(BoxView boxView){
-    }
-
 }

@@ -36,3 +36,11 @@ VBox {
     -fx-border-color: red;
     -fx-border-width: 2px;
 }
+
+#attribute{
+    -fx-alignment: center;
+}
+
+Button{
+    -fx-padding: 2 5 2 5;
+}

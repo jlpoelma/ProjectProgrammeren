@@ -1,5 +1,6 @@
 package uml.xmlElements;
 
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 
@@ -112,9 +113,9 @@ public class Box implements Observable{
     }
 
     private void fireInvalidationEvent(){
-        for (InvalidationListener listener: listenerList){
-            listener .invalidated(this);
-        }
+            for (InvalidationListener listener: listenerList){
+                listener .invalidated(this);
+            }
     }
 
     public void addAttribute(Attribute attribute){
@@ -124,5 +125,10 @@ public class Box implements Observable{
 
     public void addRelation(Relation relation){
         relationList.add(relation);
+    }
+
+    public void removeAttribute(Attribute attribute){
+        attributeList.remove(attribute);
+        fireInvalidationEvent();
     }
 }

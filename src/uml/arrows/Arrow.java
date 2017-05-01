@@ -1,13 +1,16 @@
 package uml.arrows;
 
 import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
-import uml.BoxView;
+import uml.views.BoxView;
 import uml.xmlElements.Box;
 
 /**
@@ -20,14 +23,43 @@ public abstract class Arrow implements InvalidationListener{
     protected Point2D pointLeft;
     private Box startModel;
     private Box destinationModel;
+    private BoxView startBox;
+    private BoxView destinationBox;
 
     public Arrow(Box startModel, Box destinationModel){
         this.startModel = startModel;
         this.destinationModel = destinationModel;
-        startModel.addListener(this);
-        destinationModel.addListener(this);
+        startBox = (BoxView)startModel.getListenerList().get(0);
+        destinationBox = (BoxView)destinationModel.getListenerList().get(0);
+        //startModel.addListener(this);
+        //destinationModel.addListener(this);
         arrowLine = new Line(); //hoofdlijn aanmaken + coordinaten instellen
+        startBox.heightProperty().addListener((observable, oldValue, newValue) -> {
+            invalidated(null);
+        });
+        destinationBox.heightProperty().addListener((observable, oldValue, newValue) -> {
+            invalidated(null);
+        });
+        startBox.prefWidthProperty().addListener(observable -> {
+            invalidated(null);
+        });
+        destinationBox.prefWidthProperty().addListener(observable -> {
+            invalidated(null);
+        });
+        startBox.layoutXProperty().addListener(observable -> {
+            invalidated(null);
+        });
+        startBox.layoutYProperty().addListener(observable -> {
+            invalidated(null);
+        });
+        destinationBox.layoutXProperty().addListener(observable -> {
+            invalidated(null);
+        });
+        destinationBox.layoutYProperty().addListener(observable -> {
+            invalidated(null);
+        });
     }
+
 
     public Box getStartModel(){
         return startModel;
@@ -38,8 +70,6 @@ public abstract class Arrow implements InvalidationListener{
     }
 
     public void setLine(){
-        BoxView startBox = (BoxView)startModel.getListenerList().get(0);
-        BoxView destinationBox = (BoxView)destinationModel.getListenerList().get(0);
         Point2D middleStart = calculateMiddle(startBox); //midden van start en aankomst berekenen
         Point2D middleDestination = calculateMiddle(destinationBox);
         double angleStart = calculateAngle(middleStart, middleDestination); //starthoek van pijl berekenen
@@ -52,10 +82,6 @@ public abstract class Arrow implements InvalidationListener{
         arrowLine.setEndX(aankomst.getX());
         arrowLine.setEndY(aankomst.getY());
         generateSidePoints();
-        arrowLine.setOnContextMenuRequested(event -> {
-            ContextMenu contextMenu = setOnRightClick();
-            contextMenu.show(arrowLine, event.getScreenX(), event.getScreenY());
-        });
     }
 
     public double berekenLengte(double x1, double y1, double x2, double y2){
@@ -145,18 +171,5 @@ public abstract class Arrow implements InvalidationListener{
 
     }
 
-    public void invalidated(){
-    }
-
-    public ContextMenu setOnRightClick(){
-        ContextMenu contextMenu = new ContextMenu();
-        MenuItem delete = new MenuItem("delete");
-        contextMenu.getItems().add(delete);
-        delete.setOnAction(event -> {
-            startModel.removeListener(this);
-            destinationModel.removeListener(this);
-            remove((AnchorPane)this.arrowLine.getParent());
-        });
-        return contextMenu;
-    }
+    public abstract void invalidated(Observable observable);
 }
