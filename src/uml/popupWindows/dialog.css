@@ -1,0 +1,4 @@
+.classNameError .fieldEmpty{
+    -fx-border-width: 2px;
+    -fx-border-color: red;
+}

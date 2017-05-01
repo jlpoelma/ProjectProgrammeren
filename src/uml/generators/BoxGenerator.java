@@ -33,20 +33,19 @@ public class BoxGenerator {
     public HashMap<String, Box> generateBoxes(AnchorPane pane, Diagram diagram) {
         HashMap<String, Box> boxes = new HashMap<>();
         for (Box b : diagram.getBoxList()) {
-            BoxView kader = createBox(pane, b);
-            kader.setHeader(b.getName());
+            BoxView kader = createBox(pane, b, diagram);
+            kader.applyCss();
+            kader.layout();
             generateAttributes(b.getAttributeList(), kader); //attributen toevoegen
             generateOperations(b.getOperationList(), kader); //methodes toevoegen
-            kader.applyCss(); //css toepassen zodat de hoogte kan opgevraagd worden
-            kader.layout();
             boxes.put(b.getName(), b); /*box aan hashmap met als sleutel de naam toevoegen om makkelijker relaties
              te stellen*/
         }
         return boxes; //hashmap teruggeven voor de RelationGenerator
     }
 
-    public BoxView createBox(AnchorPane pane, Box box){
-        BoxView kader = new BoxView(box);
+    public BoxView createBox(AnchorPane pane, Box box, Diagram diagram){
+        BoxView kader = new BoxView(diagram, box);
         pane.getChildren().add(kader); //box toevoegen aan AnchorPane
         return kader;
     }

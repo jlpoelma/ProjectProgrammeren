@@ -116,4 +116,13 @@ public class Box implements Observable{
             listener .invalidated(this);
         }
     }
+
+    public void addAttribute(Attribute attribute){
+        attributeList.add(attribute);
+        fireInvalidationEvent();
+    }
+
+    public void addRelation(Relation relation){
+        relationList.add(relation);
+    }
 }

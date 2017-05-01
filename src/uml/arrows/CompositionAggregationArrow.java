@@ -15,11 +15,10 @@ public class CompositionAggregationArrow extends Arrow{
     public CompositionAggregationArrow(Box start, Box destination, boolean white){
         super(start, destination);
         arrowHead = new Polygon(); //polygon voor de ruit aanmaken
-        modifyArrowHead();
         if (white) { //specifieert of ruit al dan niet wit is
             arrowHead.setId("white");
         }
-
+        this.invalidated(null);
     }
 
     public void modifyArrowHead(){
@@ -36,6 +35,11 @@ public class CompositionAggregationArrow extends Arrow{
     public void create(AnchorPane pane){
         super.create(pane); //ruit + hoofdlijn toevoegen
         pane.getChildren().add(arrowHead);
+    }
+
+    public void remove(AnchorPane pane){
+        super.remove(pane);
+        pane.getChildren().remove(arrowHead);
     }
 
     @Override

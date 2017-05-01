@@ -16,7 +16,7 @@
             <items>
                   <Menu mnemonicParsing="false" text="New..">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="Diagram" />
+                      <MenuItem mnemonicParsing="false" onAction="#newDiagram" text="Diagram" />
                         <MenuItem mnemonicParsing="false" onAction="#newClass" text="Class" />
                     </items>
                   </Menu>

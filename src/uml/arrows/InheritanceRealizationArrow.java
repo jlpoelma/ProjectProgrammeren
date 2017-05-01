@@ -17,11 +17,11 @@ public class InheritanceRealizationArrow extends Arrow {
     public InheritanceRealizationArrow(Box start, Box destination, boolean dotted) {
         super(start, destination);
         arrowHead = new Polygon(); //polygon voor de driehoek aanmaken
-        modifyArrowHead();
             arrowHead.setId("white");
         if (dotted){ //al dan niet de hoofdlijn een stippellijn maken
             arrowLine.setId("dotted");
         }
+        this.invalidated(null);
     }
 
     public void modifyArrowHead(){
@@ -35,6 +35,11 @@ public class InheritanceRealizationArrow extends Arrow {
     public void create(AnchorPane pane){
         super.create(pane);//hoodlijn + driehoek toevoegen aan AnchorPane
         pane.getChildren().add(arrowHead);
+    }
+
+    public void remove(AnchorPane pane){
+        super.remove(pane);
+        pane.getChildren().remove(arrowHead);
     }
 
     @Override

@@ -23,4 +23,8 @@ public class Diagram {
     public void addBox(Box box){
         boxList.add(box);
     }
+
+    public void removeBox(Box box){
+        boxList.remove(box);
+    }
 }

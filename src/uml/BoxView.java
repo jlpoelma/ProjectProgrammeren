@@ -6,13 +6,16 @@ import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import uml.arrows.Arrow;
 import uml.generators.BoxGenerator;
-import uml.xmlElements.Attribute;
-import uml.xmlElements.Box;
-import uml.xmlElements.Operation;
+import uml.generators.RelationGenerator;
+import uml.popupWindows.AddAttributeDialog;
+import uml.popupWindows.RelationDialog;
+import uml.xmlElements.*;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -27,11 +30,10 @@ public class BoxView extends VBox implements InvalidationListener {
     private VBox bottom;
     private Box model;
     private HashMap<String, String> visibilities;
+    private Diagram diagram;
 
-    public BoxView(Box model){
-        setLayoutX(model.getCol()); //positie specifiëren
-        setLayoutY(model.getRow());
-        setPrefWidth(model.getWidth()); //breedte instellen
+    public BoxView(Diagram diagram, Box model){
+        this.diagram = diagram;
         makeDraggable();
         makeResizable();
         setOnRightClick();
@@ -51,6 +53,7 @@ public class BoxView extends VBox implements InvalidationListener {
         visibilities.put("protected", "#");
         visibilities.put("derived", "/");
         visibilities.put("package", "~");
+        this.invalidated(null);
     }
     @Override
     public void invalidated(Observable observable) {
@@ -124,7 +127,9 @@ public class BoxView extends VBox implements InvalidationListener {
         resizeHandleArea.xProperty().bind(layoutXProperty().add(widthProperty()));
         resizeHandleArea.yProperty().bind(layoutYProperty());
         this.parentProperty().addListener((obs, oldParent, newParent) -> {
-            ((Pane)newParent).getChildren().add(resizeHandleArea);
+            if (newParent != null) {
+                ((Pane) newParent).getChildren().add(resizeHandleArea);
+            }
         });
 
         final Delta delta = new Delta();
@@ -146,7 +151,17 @@ public class BoxView extends VBox implements InvalidationListener {
     }
 
     public void setOnRightClick(){
-        final ContextMenu contextMenu = new ContextMenu();
+        ContextMenu contextMenu = new ContextMenu();
+        setRenameButton(contextMenu);
+        setDeleteButton(contextMenu);
+        setAttributeButton(contextMenu);
+        setRelationButton(contextMenu);
+        this.setOnContextMenuRequested(event -> {
+            contextMenu.show(this, event.getScreenX(), event.getScreenY());
+        });
+    }
+
+    public void setRenameButton(ContextMenu contextMenu){
         MenuItem rename = new MenuItem("Rename");
         contextMenu.getItems().add(rename);
         rename.setOnAction(event -> {
@@ -154,8 +169,58 @@ public class BoxView extends VBox implements InvalidationListener {
             Optional<String> result = inputDialog.showAndWait();
             result.ifPresent(s -> this.getModel().setName(s));
         });
-        this.setOnContextMenuRequested(event -> {
-            contextMenu.show(this, event.getScreenX(), event.getScreenY());
+    }
+
+    public void setDeleteButton(ContextMenu contextMenu){
+        MenuItem delete = new MenuItem("Delete");
+        contextMenu.getItems().add(delete);
+        delete.setOnAction(event -> {
+            AnchorPane pane = (AnchorPane)getParent();
+            for (int i = model.getListenerList().size() - 1; i > 0; i--){
+                Arrow arrow = (Arrow)model.getListenerList().get(i);
+                arrow.getDestinationModel().removeListener(arrow);
+                arrow.getStartModel().removeListener(arrow);
+                arrow.remove(pane);
+            }
+            diagram.removeBox(model);
+            pane.getChildren().remove(this);
+        });
+    }
+
+    public void setAttributeButton(ContextMenu contextMenu){
+        MenuItem addAttribute = new MenuItem("Add attribute...");
+        contextMenu.getItems().add(addAttribute);
+        addAttribute.setOnAction(event -> {
+            AddAttributeDialog dialog = new AddAttributeDialog();
+            dialog.showAndWait();
+            if (dialog.getResult() == ButtonType.OK){
+                Attribute attribute = new Attribute();
+                attribute.setName(dialog.getName().getText());
+                attribute.setScope(dialog.getScope().getValue().toString());
+                attribute.setType(dialog.getType().getText());
+                attribute.setVisibility(dialog.getVisibility().getValue().toString());
+                addAttribute(attribute);
+                applyCss(); //css toepassen zodat de hoogte kan opgevraagd worden
+                layout();
+                model.addAttribute(attribute);
+            }
+        });
+    }
+
+    public void setRelationButton(ContextMenu contextMenu){
+        MenuItem addRelation = new MenuItem("Add relation...");
+        contextMenu.getItems().add(addRelation);
+        addRelation.setOnAction(event -> {
+            RelationDialog dialog = new RelationDialog(getModel().getName());
+            dialog.showAndWait();
+            if (dialog.getResult() == ButtonType.OK){
+                AnchorPane pane = (AnchorPane)getParent();
+                Relation relation = new Relation();
+                model.addRelation(relation);
+                relation.setType(dialog.getType().getValue().toString());
+                relation.setWith(dialog.getWith().getValue().toString());
+                new RelationGenerator().setArrow(this.getModel(), UmlCompanion.classes.get(relation.getWith()), relation, pane);
+            }
         });
     }
 }

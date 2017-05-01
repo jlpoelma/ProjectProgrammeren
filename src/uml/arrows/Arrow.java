@@ -2,6 +2,8 @@ package uml.arrows;
 
 import javafx.beans.InvalidationListener;
 import javafx.geometry.Point2D;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
@@ -25,7 +27,14 @@ public abstract class Arrow implements InvalidationListener{
         startModel.addListener(this);
         destinationModel.addListener(this);
         arrowLine = new Line(); //hoofdlijn aanmaken + coordinaten instellen
-        setLine();
+    }
+
+    public Box getStartModel(){
+        return startModel;
+    }
+
+    public Box getDestinationModel(){
+        return destinationModel;
     }
 
     public void setLine(){
@@ -43,6 +52,10 @@ public abstract class Arrow implements InvalidationListener{
         arrowLine.setEndX(aankomst.getX());
         arrowLine.setEndY(aankomst.getY());
         generateSidePoints();
+        arrowLine.setOnContextMenuRequested(event -> {
+            ContextMenu contextMenu = setOnRightClick();
+            contextMenu.show(arrowLine, event.getScreenX(), event.getScreenY());
+        });
     }
 
     public double berekenLengte(double x1, double y1, double x2, double y2){
@@ -76,6 +89,10 @@ public abstract class Arrow implements InvalidationListener{
 
     public void create(AnchorPane pane){
         pane.getChildren().add(arrowLine);
+    }
+
+    public void remove(AnchorPane pane){
+        pane.getChildren().remove(arrowLine);
     }
 
     public Point2D calculateMiddle(VBox kader){ //midden van de VBox berekenen
@@ -129,5 +146,17 @@ public abstract class Arrow implements InvalidationListener{
     }
 
     public void invalidated(){
+    }
+
+    public ContextMenu setOnRightClick(){
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem delete = new MenuItem("delete");
+        contextMenu.getItems().add(delete);
+        delete.setOnAction(event -> {
+            startModel.removeListener(this);
+            destinationModel.removeListener(this);
+            remove((AnchorPane)this.arrowLine.getParent());
+        });
+        return contextMenu;
     }
 }

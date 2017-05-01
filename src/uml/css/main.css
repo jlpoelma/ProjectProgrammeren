@@ -31,3 +31,8 @@ VBox {
     -fx-fill: white;
     -fx-stroke: black;
 }
+
+#classNameError{
+    -fx-border-color: red;
+    -fx-border-width: 2px;
+}

@@ -1,6 +1,9 @@
 package uml.xmlElements;
 
+import javafx.beans.InvalidationListener;
+
 import javax.xml.bind.annotation.XmlAttribute;
+import java.util.ArrayList;
 
 /**
  * Created by Jonathan Poelman on 19/03/2017.
@@ -26,4 +29,6 @@ public class Relation {
     public void setWith(String with) {
         this.with = with;
     }
+
+
 }

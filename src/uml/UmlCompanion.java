@@ -30,7 +30,7 @@ public class UmlCompanion {
 
     public AnchorPane mainPane;
     private Diagram diagram;
-    private HashMap<String, Box> classes;
+    public static HashMap<String, Box> classes;
 
     public void initialize(){
         if (Main.parameters.size() >= 1){ //als xml-bestand wordt gespecifieerd als argument, deze openen
@@ -62,6 +62,8 @@ public class UmlCompanion {
 
     public void clearScreen(){
         mainPane.getChildren().clear();
+        diagram = null;
+        classes = null;
     }
 
     public void openFile() { //opent bestandsdialoog
@@ -75,6 +77,7 @@ public class UmlCompanion {
     public void drawDiagram(File file){
         convertXML(file);
         classes = new BoxGenerator().generateBoxes(mainPane, diagram);//Boxes genereren
+        System.out.println(classes);
         Platform.runLater(() -> { //zorgt ervoor dat de hoogte achteraf correct kan opgevraagd worden
             new RelationGenerator().generateRelation(mainPane, diagram, classes); //relaties (pijlen) genereren
         });
@@ -132,7 +135,8 @@ public class UmlCompanion {
 
         if (input.getResult() == ButtonType.OK){
             Box box = new Box();
-            BoxView newBox = new BoxView(box);
+            diagram.addBox(box);
+            BoxView newBox = new BoxView(diagram, box);
             mainPane.getChildren().add(newBox);
             box.setName(input.getName().getText());
             box.setCol(Double.parseDouble(input.getColumn().getText()));
@@ -140,12 +144,5 @@ public class UmlCompanion {
             box.setWidth(Double.parseDouble(input.getWidthValue().getText()));
             classes.put(box.getName(), box);
         }
-    }
-
-    public void newRelation(){
-        RelationDialog input = new RelationDialog();
-        input.showAndWait();
-
-
     }
 }

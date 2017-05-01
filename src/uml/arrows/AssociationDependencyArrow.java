@@ -20,7 +20,7 @@ public class AssociationDependencyArrow extends Arrow{
         }
         arrowSide1 = new Line();
         arrowSide2 = new Line();
-        modifyArrowSide();
+        this.invalidated(null);
     }
 
     public void modifyArrowSide(){ //maakt een pijlkop zijde aan
@@ -38,6 +38,13 @@ public class AssociationDependencyArrow extends Arrow{
         super.create(pane);
         pane.getChildren().add(arrowSide1);
         pane.getChildren().add(arrowSide2);
+    }
+
+    public void remove(AnchorPane pane){
+        super.remove(pane);
+        pane.getChildren().remove(arrowSide1);
+        pane.getChildren().remove(arrowSide2);
+
     }
 
 
