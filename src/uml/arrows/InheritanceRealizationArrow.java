@@ -6,6 +6,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Polygon;
 import uml.xmlElements.Box;
+import uml.xmlElements.Relation;
 
 /**
  * Created by Jonathan Poelman on 3/04/2017.
@@ -14,14 +15,16 @@ public class InheritanceRealizationArrow extends Arrow {
 
     private Polygon arrowHead;
 
-    public InheritanceRealizationArrow(Box start, Box destination, boolean dotted) {
-        super(start, destination);
+    public InheritanceRealizationArrow(Box start, Box destination, boolean dotted, Relation relation) {
+        super(start, destination, relation);
         arrowHead = new Polygon(); //polygon voor de driehoek aanmaken
             arrowHead.setId("white");
         if (dotted){ //al dan niet de hoofdlijn een stippellijn maken
             arrowLine.setId("dotted");
         }
-        this.invalidated(null);
+        redraw();
+        arrowHead.setOnContextMenuRequested(event ->
+                contextMenu.show(arrowHead, event.getScreenX(), event.getScreenY()));
     }
 
     public void modifyArrowHead(){
@@ -42,8 +45,8 @@ public class InheritanceRealizationArrow extends Arrow {
         pane.getChildren().remove(arrowHead);
     }
 
-    @Override
-    public void invalidated(Observable observable) {
+    public void redraw() {
+        super.redraw();
         setLine();
         modifyArrowHead();
     }

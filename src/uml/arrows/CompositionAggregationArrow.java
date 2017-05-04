@@ -5,6 +5,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Polygon;
 import uml.xmlElements.Box;
+import uml.xmlElements.Relation;
 
 /**
  * Created by Jonathan Poelman on 3/04/2017.
@@ -12,13 +13,15 @@ import uml.xmlElements.Box;
 public class CompositionAggregationArrow extends Arrow{
 
     private Polygon arrowHead;
-    public CompositionAggregationArrow(Box start, Box destination, boolean white){
-        super(start, destination);
+    public CompositionAggregationArrow(Box start, Box destination, boolean white, Relation relation){
+        super(start, destination, relation);
         arrowHead = new Polygon(); //polygon voor de ruit aanmaken
         if (white) { //specifieert of ruit al dan niet wit is
             arrowHead.setId("white");
         }
-        this.invalidated(null);
+        redraw();
+        arrowHead.setOnContextMenuRequested(event ->
+                contextMenu.show(arrowHead, event.getScreenX(), event.getScreenY()));
     }
 
     public void modifyArrowHead(){
@@ -43,7 +46,8 @@ public class CompositionAggregationArrow extends Arrow{
     }
 
     @Override
-    public void invalidated(Observable observable) {
+    public void redraw() {
+        super.redraw();
         setLine();
         modifyArrowHead();
     }

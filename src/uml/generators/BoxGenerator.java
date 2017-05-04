@@ -21,6 +21,8 @@ public class BoxGenerator {
         HashMap<String, Box> boxes = new HashMap<>();
         for (Box b : diagram.getBoxList()) {
             BoxView kader = createBox(pane, b, diagram);
+            kader.applyCss();
+            kader.layout();
             boxes.put(b.getName(), b); /*box aan hashmap met als sleutel de naam toevoegen om makkelijker relaties
              te stellen*/
         }

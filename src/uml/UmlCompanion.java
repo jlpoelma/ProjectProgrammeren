@@ -30,15 +30,18 @@ public class UmlCompanion {
     public AnchorPane mainPane;
     private Diagram diagram;
     public static HashMap<String, Box> classes;
+    private File file;
 
     public void initialize(){
+        newDiagram();
         if (Main.parameters.size() >= 1){ //als xml-bestand wordt gespecifieerd als argument, deze openen
-            File file = new File(Main.parameters.get(0));
-            drawDiagram(file);
+            this.file = new File(Main.parameters.get(0));
+            drawDiagram();
+
         }
         if (Main.parameters.size() == 2){
-            File file = new File(Main.parameters.get(1));
-            Platform.runLater(() -> {takeScreenshot(file);});
+            File image = new File(Main.parameters.get(1));
+            Platform.runLater(() -> {takeScreenshot(image);});
             exitProgram();
 
         }
@@ -69,11 +72,12 @@ public class UmlCompanion {
         clearScreen();
         FileChooser chooser = new FileChooser();
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML-files", "*.xml"));
-        File file = chooser.showOpenDialog(mainPane.getScene().getWindow());
-        drawDiagram(file);
+        file = chooser.showOpenDialog(mainPane.getScene().getWindow());
+        drawDiagram();
     }
 
-    public void drawDiagram(File file){
+    public void drawDiagram(){
+        Main.setTitle(file.getName());
         convertXML(file);
         classes = new BoxGenerator().generateBoxes(mainPane, diagram);//Boxes genereren
         System.out.println(classes);
@@ -108,6 +112,15 @@ public class UmlCompanion {
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML-files", "*.xml"));
         File file = chooser.showSaveDialog(mainPane.getScene().getWindow());
         javaToXML(file);
+        Main.setTitle(file.getName());
+    }
+
+    public void saveFile(){
+        if(file == null){
+            saveFileAs();
+        } else{
+            javaToXML(file);
+        }
     }
 
     public void javaToXML(File file){
@@ -124,6 +137,8 @@ public class UmlCompanion {
         clearScreen();
         diagram = new Diagram();
         classes = new HashMap<>();
+        file = null;
+        Main.setTitle("untitled");
     }
 
     public void newClass(){

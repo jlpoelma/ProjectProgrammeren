@@ -12,11 +12,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import uml.views.BoxView;
 import uml.xmlElements.Box;
+import uml.xmlElements.Relation;
 
 /**
  * Created by Jonathan Poelman on 3/04/2017.
  */
-public abstract class Arrow implements InvalidationListener{
+public abstract class Arrow {
 
     protected Line arrowLine;
     protected Point2D pointRight;
@@ -25,39 +26,29 @@ public abstract class Arrow implements InvalidationListener{
     private Box destinationModel;
     private BoxView startBox;
     private BoxView destinationBox;
+    private Relation relation;
+    protected ContextMenu contextMenu;
 
-    public Arrow(Box startModel, Box destinationModel){
+    public Arrow(Box startModel, Box destinationModel, Relation relation){
+        contextMenu = new ContextMenu();
+        MenuItem delete = new MenuItem("Delete Relation");
+        contextMenu.getItems().add(delete);
+        delete.setOnAction(event -> {
+            remove((AnchorPane)arrowLine.getParent());
+        });
+        this.relation = relation;
         this.startModel = startModel;
         this.destinationModel = destinationModel;
         startBox = (BoxView)startModel.getListenerList().get(0);
         destinationBox = (BoxView)destinationModel.getListenerList().get(0);
+        startBox.addArrow(this);
+        destinationBox.addArrow(this);
         //startModel.addListener(this);
         //destinationModel.addListener(this);
         arrowLine = new Line(); //hoofdlijn aanmaken + coordinaten instellen
-        startBox.heightProperty().addListener((observable, oldValue, newValue) -> {
-            invalidated(null);
-        });
-        destinationBox.heightProperty().addListener((observable, oldValue, newValue) -> {
-            invalidated(null);
-        });
-        startBox.prefWidthProperty().addListener(observable -> {
-            invalidated(null);
-        });
-        destinationBox.prefWidthProperty().addListener(observable -> {
-            invalidated(null);
-        });
-        startBox.layoutXProperty().addListener(observable -> {
-            invalidated(null);
-        });
-        startBox.layoutYProperty().addListener(observable -> {
-            invalidated(null);
-        });
-        destinationBox.layoutXProperty().addListener(observable -> {
-            invalidated(null);
-        });
-        destinationBox.layoutYProperty().addListener(observable -> {
-            invalidated(null);
-        });
+        setListeners();
+        arrowLine.setOnContextMenuRequested(event ->
+                contextMenu.show(arrowLine, event.getScreenX(), event.getScreenY()));
     }
 
 
@@ -118,6 +109,9 @@ public abstract class Arrow implements InvalidationListener{
     }
 
     public void remove(AnchorPane pane){
+        startBox.removeArrow(this);
+        destinationBox.removeArrow(this);
+        startModel.removeRelation(relation);
         pane.getChildren().remove(arrowLine);
     }
 
@@ -171,5 +165,22 @@ public abstract class Arrow implements InvalidationListener{
 
     }
 
-    public abstract void invalidated(Observable observable);
+    public void redraw(){
+        startBox.applyCss();
+        startBox.layout();
+        destinationBox.applyCss();
+        destinationBox.layout();
+    }
+
+    public void setListeners(){
+        startBox.heightProperty().addListener((observable, oldValue, newValue) -> redraw());
+        destinationBox.heightProperty().addListener((observable, oldValue, newValue) -> redraw());
+        startBox.prefWidthProperty().addListener(observable -> redraw());
+        destinationBox.prefWidthProperty().addListener(observable -> redraw());
+        startBox.layoutXProperty().addListener(observable -> redraw());
+        startBox.layoutYProperty().addListener(observable -> redraw());
+        destinationBox.layoutXProperty().addListener(observable -> redraw());
+        destinationBox.layoutYProperty().addListener(observable -> redraw());
+    }
+
 }

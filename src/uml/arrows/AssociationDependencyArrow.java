@@ -4,6 +4,7 @@ import javafx.beans.Observable;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
 import uml.xmlElements.Box;
+import uml.xmlElements.Relation;
 
 /**
  * Created by Jonathan Poelman on 3/22/2017.
@@ -13,14 +14,18 @@ public class AssociationDependencyArrow extends Arrow{
     private Line arrowSide1;
     private Line arrowSide2;
 
-    public AssociationDependencyArrow(Box start, Box destination, boolean dotted){
-        super(start, destination);
+    public AssociationDependencyArrow(Box start, Box destination, boolean dotted, Relation relation){
+        super(start, destination, relation);
         if (dotted){
             arrowLine.setId("dotted"); //specifieert of de hoofdlijn al dan niet gestippeld is
         }
         arrowSide1 = new Line();
         arrowSide2 = new Line();
-        this.invalidated(null);
+        redraw();
+        arrowSide1.setOnContextMenuRequested(event ->
+                contextMenu.show(arrowSide1, event.getScreenX(), event.getScreenY()));
+        arrowSide2.setOnContextMenuRequested(event ->
+                contextMenu.show(arrowSide2, event.getScreenX(), event.getScreenY()));
     }
 
     public void modifyArrowSide(){ //maakt een pijlkop zijde aan
@@ -48,8 +53,8 @@ public class AssociationDependencyArrow extends Arrow{
     }
 
 
-    @Override
-    public void invalidated(Observable observable) {
+    public void redraw() {
+        super.redraw();
         setLine();
         modifyArrowSide();
     }

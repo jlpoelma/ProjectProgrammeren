@@ -65,44 +65,71 @@ public class ClassDialog extends Dialog {
         width = new TextField();
         column = new TextField();
         row = new TextField();
-        setUpName();
-        inputs.add(new Label("width"), 0, 1);
-        inputs.add(width, 1, 1);
-        inputs.add(new Label("column"), 0, 2);
-        inputs.add(column, 1, 2);
-        inputs.add(new Label("row"), 0, 3);
-        inputs.add(row, 1, 3);
-        getDialogPane().lookupButton(ButtonType.OK).disableProperty().bind(
-                Bindings.isEmpty(name.textProperty())
-                .or(Bindings.isEmpty(width.textProperty()))
-                .or(Bindings.isEmpty(column.textProperty()))
-                .or(Bindings.isEmpty(row.textProperty()))
-        );
+        name = new TextField();
+        inputs.add(new Label("Name"), 0, 0);
+        inputs.add(name, 1, 0);
+        inputs.add(new Label("width"), 3, 0);
+        inputs.add(width, 4, 0);
+        inputs.add(new Label("column"), 5, 0);
+        inputs.add(column, 6, 0);
+        inputs.add(new Label("row"), 7, 0);
+        inputs.add(row, 8, 0);
         getDialogPane().setContent(inputs);
+        checkErrors();
+        setUpName();
     }
 
-    public void validateName(String value, Label errorNaam){
-        if (UmlCompanion.classes.containsKey(value)){
+    public void validateName(){
+        if (UmlCompanion.classes.containsKey(name.getText())){
             name.getStyleClass().add("classNameError");
-            errorNaam.setVisible(true);
-            getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
         } else{
             name.getStyleClass().remove("classNameError");
-            errorNaam.setVisible(false);
-            //getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+        }
+    }
+
+    public void validateNumberField(TextField field){
+        if (checkNumber(field.getText())){
+            field.getStyleClass().remove("classNameError");
+        } else{
+            field.getStyleClass().add("classNameError");
         }
     }
 
     public void setUpName(){
-        name = new TextField();
-        Label errorNaam = new Label("Klasse met dezelfde naam bestaat al.");
-        errorNaam.setVisible(false);
-        inputs.add(new Label("Name"), 0, 0);
-        inputs.add(name, 1, 0);
-        inputs.add(errorNaam, 2, 0);
         name.textProperty().addListener(((observable, oldValue, newValue) -> {
-            validateName(newValue, errorNaam);
+            checkErrors();
+            validateName();
         }));
+        column.textProperty().addListener(((observable, oldValue, newValue) -> {
+            checkErrors();
+            validateNumberField(column);
+        }));
+        row.textProperty().addListener(((observable, oldValue, newValue) -> {
+            checkErrors();
+            validateNumberField(row);
+        }));
+        width.textProperty().addListener(((observable, oldValue, newValue) -> {
+            checkErrors();
+            validateNumberField(width);
+        }));
+    }
+
+    public void checkErrors(){
+        if(!UmlCompanion.classes.containsKey(name.getText()) && !name.getText().isEmpty() && !column.getText().isEmpty() && !row.getText().isEmpty()
+                && !width.getText().isEmpty() && checkNumber(column.getText()) && checkNumber(row.getText()) && checkNumber(width.getText())){
+            getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+        } else{
+            getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+        }
+    }
+
+    public boolean checkNumber(String s){
+        try{
+            Integer.parseInt(s);
+        } catch(NumberFormatException | NullPointerException e){
+            return false;
+        }
+        return true;
     }
 
 

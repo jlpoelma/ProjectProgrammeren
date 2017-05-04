@@ -1,4 +1,12 @@
-.classNameError .fieldEmpty{
+.classNameError{
     -fx-border-width: 2px;
     -fx-border-color: red;
+}
+
+HBox {
+    -fx-alignment: center;
+}
+
+VBox {
+    -fx-alignment: center;
 }

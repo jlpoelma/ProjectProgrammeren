@@ -15,6 +15,9 @@ public class Operation extends Attribute {
     }
     @XmlElement(name = "attribute")
     public void setAttributeList(List<Attribute> attributeList) {
-        this.attributeList = attributeList;
+        if(attributeList != this.attributeList) {
+            this.attributeList = attributeList;
+            fireInvalidationEvent();
+        }
     }
 }

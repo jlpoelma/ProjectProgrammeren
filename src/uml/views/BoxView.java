@@ -16,9 +16,12 @@ import uml.arrows.Arrow;
 import uml.generators.BoxGenerator;
 import uml.generators.RelationGenerator;
 import uml.popupWindows.AddAttributeDialog;
+import uml.popupWindows.OperationDialog;
 import uml.popupWindows.RelationDialog;
 import uml.xmlElements.*;
 
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -33,8 +36,11 @@ public class BoxView extends VBox implements InvalidationListener {
     private Box model;
     private HashMap<String, String> visibilities;
     private Diagram diagram;
+    private ArrayList<Arrow> arrows;
+
 
     public BoxView(Diagram diagram, Box model){
+        arrows = new ArrayList<>();
         this.diagram = diagram;
         makeDraggable();
         makeResizable();
@@ -55,6 +61,8 @@ public class BoxView extends VBox implements InvalidationListener {
     }
     @Override
     public void invalidated(Observable observable) {
+        applyCss();
+        layout();
         setPrefWidth(model.getWidth());
         setLayoutX(model.getCol());
         setLayoutY(model.getRow());
@@ -74,12 +82,16 @@ public class BoxView extends VBox implements InvalidationListener {
             setAttributeButton();
         });
         for (Attribute a: model.getAttributeList()) {
-            addAttribute(a, middle);
+            addAttribute(a);
         }
     }
 
-    public void addAttribute(Attribute attribute, VBox vBox){
-        vBox.getChildren().add(vBox.getChildren().size() - 1, new AttributeView(attribute, getModel()));
+    public void addAttribute(Attribute attribute){
+        middle.getChildren().add(middle.getChildren().size() - 1, new AttributeView(attribute, getModel()));
+    }
+
+    public void addOperation(Operation operation){
+        bottom.getChildren().add(bottom.getChildren().size() - 1, new OperationView(operation, getModel()));
     }
 
     public void setOperations(){
@@ -89,7 +101,7 @@ public class BoxView extends VBox implements InvalidationListener {
             setOperationButton();
         });
         for (Operation o: model.getOperationList()) {
-            addAttribute(o, bottom);
+            addOperation(o);
         }
     }
 
@@ -105,28 +117,36 @@ public class BoxView extends VBox implements InvalidationListener {
     public void makeDraggable(){
         final Delta delta = new Delta();
         setOnMousePressed(event -> {
-            this.setCursor(Cursor.MOVE);
-            delta.x = this.getLayoutX() - event.getSceneX();
-            delta.y = this.getLayoutY() - event.getSceneY();
+            if(event.getButton().toString().equals("PRIMARY")) {
+                this.setCursor(Cursor.MOVE);
+                delta.x = this.getLayoutX() - event.getSceneX();
+                delta.y = this.getLayoutY() - event.getSceneY();
+            }
         });
 
         setOnMouseReleased(event -> {
-            this.setCursor(Cursor.HAND);
+            if(event.getButton().toString().equals("PRIMARY")) {
+                this.setCursor(Cursor.HAND);
+            }
         });
 
         setOnMouseEntered(event -> {
-            this.setCursor(Cursor.HAND);
+            if(event.getButton().toString().equals("PRIMARY")) {
+                this.setCursor(Cursor.HAND);
+            }
         });
 
         this.setOnMouseDragged(event -> {
-            this.getModel().setCol(delta.x + event.getSceneX());
-            this.getModel().setRow(delta.y + event.getSceneY());
+            if(event.getButton().toString().equals("PRIMARY")) {
+                this.getModel().setCol(delta.x + event.getSceneX());
+                this.getModel().setRow(delta.y + event.getSceneY());
+            }
         });
     }
 
     public void makeResizable(){
         Rectangle resizeHandleArea = new Rectangle();
-        resizeHandleArea.setWidth(1);
+        resizeHandleArea.setWidth(3);
         resizeHandleArea.setOpacity(0.0);
         resizeHandleArea.heightProperty().bind(heightProperty());
         resizeHandleArea.xProperty().bind(layoutXProperty().add(widthProperty()));
@@ -139,19 +159,27 @@ public class BoxView extends VBox implements InvalidationListener {
 
         final Delta delta = new Delta();
         resizeHandleArea.setOnMousePressed(event -> {
-            delta.x = this.getPrefWidth() - event.getSceneX();
+            if(event.getButton().toString().equals("PRIMARY")) {
+                delta.x = this.getPrefWidth() - event.getSceneX();
+            }
         });
 
         resizeHandleArea.setOnMouseReleased(event -> {
-            resizeHandleArea.setCursor(Cursor.HAND);
+            if(event.getButton().toString().equals("PRIMARY")) {
+                resizeHandleArea.setCursor(Cursor.HAND);
+            }
         });
 
         resizeHandleArea.setOnMouseEntered(event -> {
-            resizeHandleArea.setCursor(Cursor.H_RESIZE);
+            if(event.getButton().toString().equals("PRIMARY")) {
+                resizeHandleArea.setCursor(Cursor.H_RESIZE);
+            }
         });
 
         resizeHandleArea.setOnMouseDragged(event -> {
-            model.setWidth(delta.x + event.getSceneX());
+            if(delta.x + event.getSceneX() > 70 && event.getButton().toString().equals("PRIMARY")) {
+                model.setWidth(delta.x + event.getSceneX());
+            }
         });
     }
 
@@ -180,11 +208,8 @@ public class BoxView extends VBox implements InvalidationListener {
         contextMenu.getItems().add(delete);
         delete.setOnAction(event -> {
             AnchorPane pane = (AnchorPane)getParent();
-            for (int i = model.getListenerList().size() - 1; i > 0; i--){
-                Arrow arrow = (Arrow)model.getListenerList().get(i);
-                arrow.getDestinationModel().removeListener(arrow);
-                arrow.getStartModel().removeListener(arrow);
-                arrow.remove(pane);
+            for(int i = arrows.size() - 1; i >= 0; i--){
+                arrows.get(i).remove(pane);
             }
             diagram.removeBox(model);
             pane.getChildren().remove(this);
@@ -200,7 +225,7 @@ public class BoxView extends VBox implements InvalidationListener {
                 attribute.setScope(dialog.getScope().getValue().toString());
                 attribute.setType(dialog.getType().getText());
                 attribute.setVisibility(dialog.getVisibility().getValue().toString());
-                addAttribute(attribute, middle);
+                addAttribute(attribute);
                 model.addAttribute(attribute);
             }
     }
@@ -223,6 +248,25 @@ public class BoxView extends VBox implements InvalidationListener {
     }
 
     public void setOperationButton(){
+        OperationDialog dialog = new OperationDialog();
+        dialog.showAndWait();
+        if (dialog.getResult() == ButtonType.OK){
+            Operation operation = new Operation();
+            operation.setName(dialog.getName().getText());
+            operation.setScope(dialog.getScope().getValue().toString());
+            operation.setType(dialog.getType().getText());
+            operation.setVisibility(dialog.getVisibility().getValue().toString());
+            operation.setAttributeList(dialog.getAttributes());
+            addOperation(operation);
+            model.addOperation(operation);
+        }
+    }
 
+    public void addArrow(Arrow arrow){
+        arrows.add(arrow);
+    }
+
+    public void removeArrow(Arrow arrow){
+        arrows.remove(arrow);
     }
 }

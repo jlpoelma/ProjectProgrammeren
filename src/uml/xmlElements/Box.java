@@ -131,4 +131,12 @@ public class Box implements Observable{
         attributeList.remove(attribute);
         fireInvalidationEvent();
     }
+
+    public void addOperation(Operation operation){
+        operationList.add(operation);
+    }
+
+    public void removeRelation(Relation relation){
+        relationList.remove(relation);
+    }
 }
