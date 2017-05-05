@@ -11,6 +11,7 @@ import uml.xmlElements.Attribute;
 import uml.xmlElements.Operation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -18,11 +19,14 @@ import java.util.List;
  */
 public class OperationDialog extends AddAttributeDialog {
 
+    private ArrayList<OperationAttributeHBox> attributes;
+
     private VBox attributeSpace;
 
     private Button addAttribute;
 
     public OperationDialog(){
+        attributes = new ArrayList<>();
         attributeSpace = new VBox(10);
         addAttribute = new Button("Add Attribute...");
         attributeSpace.getChildren().add(addAttribute);
@@ -34,23 +38,27 @@ public class OperationDialog extends AddAttributeDialog {
 
     public void addAttribute(String name, String type){
         OperationAttributeHBox attributeHBox = new OperationAttributeHBox();
+        attributes.add(attributeHBox);
         attributeHBox.getName().setText(name);
         attributeHBox.getType().setText(type);
+        attributeHBox.getRemoveButton().setOnAction(event -> {
+            attributeSpace.getChildren().remove(attributeHBox);
+            attributeSpace.getScene().getWindow().sizeToScene();
+            attributes.remove(attributes);
+        });
         attributeSpace.getChildren().add(attributeSpace.getChildren().size() - 1, attributeHBox);
         getDialogPane().getScene().getWindow().sizeToScene();
     }
 
     public List<Attribute> getAttributes(){
-        List<Attribute> attributes = new ArrayList<>();
-        List<Node> attributeList = attributeSpace.getChildren().subList(0, attributeSpace.getChildren().size() - 1);
-        for (Node n: attributeList) {
-            OperationAttributeHBox hBox = (OperationAttributeHBox)n;
+        ArrayList<Attribute> attributeList = new ArrayList<>();
+        for (OperationAttributeHBox h: attributes) {
             Attribute a = new Attribute();
-            a.setName(hBox.getType().getText());
-            a.setType(hBox.getName().getText());
-            attributes.add(a);
+            a.setName(h.getType().getText());
+            a.setType(h.getName().getText());
+            attributeList.add(a);
         }
-        return attributes;
+        return attributeList;
     }
 
 }

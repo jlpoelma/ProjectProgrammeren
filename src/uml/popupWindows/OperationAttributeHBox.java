@@ -27,11 +27,6 @@ public class OperationAttributeHBox extends HBox {
         getChildren().add(new Label("Type: "));
         getChildren().add(type);
         getChildren().add(remove);
-        remove.setOnAction(event -> {
-            VBox vBox = (VBox)getParent();
-            vBox.getChildren().remove(this);
-            vBox.getScene().getWindow().sizeToScene();
-        });
         setSpacing(10);
     }
 
@@ -42,4 +37,9 @@ public class OperationAttributeHBox extends HBox {
     public TextField getType(){
         return type;
     }
+
+    public Button getRemoveButton(){
+        return remove;
+    }
+
 }

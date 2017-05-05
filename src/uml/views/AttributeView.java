@@ -42,9 +42,6 @@ public class AttributeView extends HBox implements InvalidationListener{
         edit = new Button("edit");
         remove = new Button("remove");
         getChildren().addAll(text, edit, remove);
-        remove.setOnAction(event -> {
-            remove();
-        });
         edit.setOnAction(event -> {
             edit();
         });
@@ -53,13 +50,6 @@ public class AttributeView extends HBox implements InvalidationListener{
     @Override
     public void invalidated(Observable observable) {
         text.setText(visibilities.get(attribute.getVisibility()) + attribute.getName() + " : " + attribute.getType());
-    }
-
-    public void remove(){
-        VBox vBox = (VBox)getParent();
-        vBox.getChildren().remove(this);
-        attribute.removeListener(this);
-        boxModel.removeAttribute(attribute);
     }
 
     public void edit(){
@@ -75,5 +65,13 @@ public class AttributeView extends HBox implements InvalidationListener{
             attribute.setType(dialog.getType().getText());
             attribute.setVisibility(dialog.getVisibility().getValue().toString());
         }
+    }
+
+    public Attribute getModel(){
+        return attribute;
+    }
+
+    public Button getRemoveButton(){
+        return remove;
     }
 }

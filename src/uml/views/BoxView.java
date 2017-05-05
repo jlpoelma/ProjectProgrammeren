@@ -2,25 +2,20 @@ package uml.views;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import uml.UmlCompanion;
 import uml.arrows.Arrow;
-import uml.generators.BoxGenerator;
 import uml.generators.RelationGenerator;
 import uml.popupWindows.AddAttributeDialog;
 import uml.popupWindows.OperationDialog;
 import uml.popupWindows.RelationDialog;
 import uml.xmlElements.*;
 
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -67,6 +62,8 @@ public class BoxView extends VBox implements InvalidationListener {
         setLayoutX(model.getCol());
         setLayoutY(model.getRow());
         setHeader(model.getName());
+        setAttributes();
+        setOperations();
     }
 
     public void setHeader(String header){
@@ -76,25 +73,39 @@ public class BoxView extends VBox implements InvalidationListener {
     }
 
     public void setAttributes(){
+        middle.getChildren().clear();
         Button add = new Button("Add attribute...");
         middle.getChildren().add(add);
-        add.setOnAction(event -> {
-            setAttributeButton();
-        });
+        add.setOnAction(event -> setAttributeButton());
         for (Attribute a: model.getAttributeList()) {
             addAttribute(a);
         }
     }
 
     public void addAttribute(Attribute attribute){
-        middle.getChildren().add(middle.getChildren().size() - 1, new AttributeView(attribute, getModel()));
+        AttributeView attributeView = new AttributeView(attribute, getModel());
+        attributeView.getRemoveButton().setOnAction(event -> removeAttribute(attributeView));
+        middle.getChildren().add(middle.getChildren().size() - 1, attributeView);
     }
 
     public void addOperation(Operation operation){
-        bottom.getChildren().add(bottom.getChildren().size() - 1, new OperationView(operation, getModel()));
+        OperationView operationView = new OperationView(operation, getModel());
+        operationView.getRemoveButton().setOnAction(event -> removeOperation(operationView));
+        bottom.getChildren().add(bottom.getChildren().size() - 1, operationView);
+    }
+
+    public void removeAttribute(AttributeView attributeView){
+        getModel().removeAttribute(attributeView.getModel());
+        attributeView.getModel().removeListener(attributeView);
+    }
+
+    public void removeOperation(OperationView operationView){
+        getModel().removeOperation((Operation)operationView.getModel());
+        operationView.getModel().removeListener(operationView);
     }
 
     public void setOperations(){
+        bottom.getChildren().clear();
         Button add = new Button("Add operation...");
         bottom.getChildren().add(add);
         add.setOnAction(event -> {
@@ -225,7 +236,6 @@ public class BoxView extends VBox implements InvalidationListener {
                 attribute.setScope(dialog.getScope().getValue().toString());
                 attribute.setType(dialog.getType().getText());
                 attribute.setVisibility(dialog.getVisibility().getValue().toString());
-                addAttribute(attribute);
                 model.addAttribute(attribute);
             }
     }
@@ -257,7 +267,6 @@ public class BoxView extends VBox implements InvalidationListener {
             operation.setType(dialog.getType().getText());
             operation.setVisibility(dialog.getVisibility().getValue().toString());
             operation.setAttributeList(dialog.getAttributes());
-            addOperation(operation);
             model.addOperation(operation);
         }
     }

@@ -40,6 +40,8 @@ public class AddAttributeDialog extends Dialog {
         inputs.setPadding(new Insets(10, 150, 10, 10));
         scope = new ChoiceBox();
         visibility = new ChoiceBox();
+        scope.setValue("instance");
+        visibility.setValue("public");
         scope.getItems().addAll("instance", "classifier");
         visibility.getItems().addAll("public", "private", "protected", "package");
         name = new TextField();
@@ -55,5 +57,32 @@ public class AddAttributeDialog extends Dialog {
         main.getChildren().add(type);
         inputs.getChildren().add(main);
         getDialogPane().setContent(inputs);
+        checkErrors();
+        setUpListeners();
     }
+
+    public void setUpListeners(){
+        scope.valueProperty().addListener(observable -> {
+            checkErrors();
+        });
+        visibility.valueProperty().addListener(observable -> {
+            checkErrors();
+        });
+        name.textProperty().addListener(observable -> {
+            checkErrors();
+        });
+        type.textProperty().addListener(observable -> {
+            checkErrors();
+        });
+    }
+
+    public void checkErrors(){
+        if(!name.getText().isEmpty() && !type.getText().isEmpty()){
+            getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+        } else{
+            getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+        }
+    }
+
+
 }

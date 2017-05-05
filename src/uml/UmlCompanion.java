@@ -7,7 +7,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
-import uml.generators.BoxGenerator;
+import uml.generators.BoxManager;
 import uml.generators.RelationGenerator;
 import uml.popupWindows.ClassDialog;
 import uml.views.BoxView;
@@ -79,7 +79,7 @@ public class UmlCompanion {
     public void drawDiagram(){
         Main.setTitle(file.getName());
         convertXML(file);
-        classes = new BoxGenerator().generateBoxes(mainPane, diagram);//Boxes genereren
+        classes = new BoxManager(mainPane).generateBoxes(diagram);//Boxes genereren
         System.out.println(classes);
         Platform.runLater(() -> { //zorgt ervoor dat de hoogte achteraf correct kan opgevraagd worden
             new RelationGenerator().generateRelation(mainPane, diagram, classes); //relaties (pijlen) genereren

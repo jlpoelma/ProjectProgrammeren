@@ -13,11 +13,17 @@ import java.util.List;
 /**
  * Created by Jonathan Poelman on 3/22/2017.
  */
-public class BoxGenerator {
+public class BoxManager {
 
     private HashMap<String, String> visibilities;
 
-    public HashMap<String, Box> generateBoxes(AnchorPane pane, Diagram diagram) {
+    private AnchorPane pane;
+
+    public BoxManager(AnchorPane pane){
+        this.pane = pane;
+    }
+
+    public HashMap<String, Box> generateBoxes(Diagram diagram) {
         HashMap<String, Box> boxes = new HashMap<>();
         for (Box b : diagram.getBoxList()) {
             BoxView kader = createBox(pane, b, diagram);
@@ -33,5 +39,9 @@ public class BoxGenerator {
         BoxView kader = new BoxView(diagram, box);
         pane.getChildren().add(kader); //box toevoegen aan AnchorPane
         return kader;
+    }
+
+    public void removeBox(BoxView boxView){
+
     }
 }
